@@ -8,17 +8,50 @@
 </head>
 
 <body>
-    <div id="myapp"></div>
+  <div id="myapp"></div>
 </body>
 
 <script type="text/javascript">
 
-// Start the Elm application.
-var app = Elm.Main.init({
+  // Start the Elm application.
+  var app = Elm.Main.init({
     node: document.getElementById('myapp')
-});
+  });
 
-// ---------- now actually use the app object
+  // get a reference to the SpeechSynthesis controller 
+  const synth = window.speechSynthesis;
+  let voices = [];
+
+  function loadVoices() {
+    voices = synth.getVoices();
+  }
+
+  loadVoices(); // load voices if already available
+  speechSynthesis.onvoiceschanged = loadVoices; // set up listener in case voices aren't ready yet
+
+  app.ports.sendSpeech.subscribe(function (message) {
+    console.log("here")
+
+    function speakWhenVoicesReady() {
+      if (voices.length > 0) {
+        const utterThis = new SpeechSynthesisUtterance(message);
+        utterThis.voice = voices[0];
+        console.log(utterThis.voice);
+        utterThis.pitch = 1;
+        utterThis.rate = 0.8;
+        synth.speak(utterThis);
+        console.log("message received" + message);
+      }
+      else {
+        console.log("Voices not loaded yet, retrying in 100ms...");
+        setTimeout(speakWhenVoicesReady, 100);
+      }
+    }
+
+    console.log("made it")
+    speakWhenVoicesReady();
+  });
+
 
 </script>
 

@@ -80,87 +80,6 @@ function A9(fun, a, b, c, d, e, f, g, h, i) {
 console.warn('Compiled in DEV mode. Follow the advice at https://elm-lang.org/0.19.1/optimize for better performance and smaller assets.');
 
 
-var _List_Nil_UNUSED = { $: 0 };
-var _List_Nil = { $: '[]' };
-
-function _List_Cons_UNUSED(hd, tl) { return { $: 1, a: hd, b: tl }; }
-function _List_Cons(hd, tl) { return { $: '::', a: hd, b: tl }; }
-
-
-var _List_cons = F2(_List_Cons);
-
-function _List_fromArray(arr)
-{
-	var out = _List_Nil;
-	for (var i = arr.length; i--; )
-	{
-		out = _List_Cons(arr[i], out);
-	}
-	return out;
-}
-
-function _List_toArray(xs)
-{
-	for (var out = []; xs.b; xs = xs.b) // WHILE_CONS
-	{
-		out.push(xs.a);
-	}
-	return out;
-}
-
-var _List_map2 = F3(function(f, xs, ys)
-{
-	for (var arr = []; xs.b && ys.b; xs = xs.b, ys = ys.b) // WHILE_CONSES
-	{
-		arr.push(A2(f, xs.a, ys.a));
-	}
-	return _List_fromArray(arr);
-});
-
-var _List_map3 = F4(function(f, xs, ys, zs)
-{
-	for (var arr = []; xs.b && ys.b && zs.b; xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
-	{
-		arr.push(A3(f, xs.a, ys.a, zs.a));
-	}
-	return _List_fromArray(arr);
-});
-
-var _List_map4 = F5(function(f, ws, xs, ys, zs)
-{
-	for (var arr = []; ws.b && xs.b && ys.b && zs.b; ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
-	{
-		arr.push(A4(f, ws.a, xs.a, ys.a, zs.a));
-	}
-	return _List_fromArray(arr);
-});
-
-var _List_map5 = F6(function(f, vs, ws, xs, ys, zs)
-{
-	for (var arr = []; vs.b && ws.b && xs.b && ys.b && zs.b; vs = vs.b, ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
-	{
-		arr.push(A5(f, vs.a, ws.a, xs.a, ys.a, zs.a));
-	}
-	return _List_fromArray(arr);
-});
-
-var _List_sortBy = F2(function(f, xs)
-{
-	return _List_fromArray(_List_toArray(xs).sort(function(a, b) {
-		return _Utils_cmp(f(a), f(b));
-	}));
-});
-
-var _List_sortWith = F2(function(f, xs)
-{
-	return _List_fromArray(_List_toArray(xs).sort(function(a, b) {
-		var ord = A2(f, a, b);
-		return ord === $elm$core$Basics$EQ ? 0 : ord === $elm$core$Basics$LT ? -1 : 1;
-	}));
-});
-
-
-
 var _JsArray_empty = [];
 
 function _JsArray_singleton(value)
@@ -790,6 +709,87 @@ function _Utils_ap(xs, ys)
 	}
 	return root;
 }
+
+
+
+var _List_Nil_UNUSED = { $: 0 };
+var _List_Nil = { $: '[]' };
+
+function _List_Cons_UNUSED(hd, tl) { return { $: 1, a: hd, b: tl }; }
+function _List_Cons(hd, tl) { return { $: '::', a: hd, b: tl }; }
+
+
+var _List_cons = F2(_List_Cons);
+
+function _List_fromArray(arr)
+{
+	var out = _List_Nil;
+	for (var i = arr.length; i--; )
+	{
+		out = _List_Cons(arr[i], out);
+	}
+	return out;
+}
+
+function _List_toArray(xs)
+{
+	for (var out = []; xs.b; xs = xs.b) // WHILE_CONS
+	{
+		out.push(xs.a);
+	}
+	return out;
+}
+
+var _List_map2 = F3(function(f, xs, ys)
+{
+	for (var arr = []; xs.b && ys.b; xs = xs.b, ys = ys.b) // WHILE_CONSES
+	{
+		arr.push(A2(f, xs.a, ys.a));
+	}
+	return _List_fromArray(arr);
+});
+
+var _List_map3 = F4(function(f, xs, ys, zs)
+{
+	for (var arr = []; xs.b && ys.b && zs.b; xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
+	{
+		arr.push(A3(f, xs.a, ys.a, zs.a));
+	}
+	return _List_fromArray(arr);
+});
+
+var _List_map4 = F5(function(f, ws, xs, ys, zs)
+{
+	for (var arr = []; ws.b && xs.b && ys.b && zs.b; ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
+	{
+		arr.push(A4(f, ws.a, xs.a, ys.a, zs.a));
+	}
+	return _List_fromArray(arr);
+});
+
+var _List_map5 = F6(function(f, vs, ws, xs, ys, zs)
+{
+	for (var arr = []; vs.b && ws.b && xs.b && ys.b && zs.b; vs = vs.b, ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
+	{
+		arr.push(A5(f, vs.a, ws.a, xs.a, ys.a, zs.a));
+	}
+	return _List_fromArray(arr);
+});
+
+var _List_sortBy = F2(function(f, xs)
+{
+	return _List_fromArray(_List_toArray(xs).sort(function(a, b) {
+		return _Utils_cmp(f(a), f(b));
+	}));
+});
+
+var _List_sortWith = F2(function(f, xs)
+{
+	return _List_fromArray(_List_toArray(xs).sort(function(a, b) {
+		var ord = A2(f, a, b);
+		return ord === $elm$core$Basics$EQ ? 0 : ord === $elm$core$Basics$LT ? -1 : 1;
+	}));
+});
 
 
 
@@ -4416,12 +4416,11 @@ function _Time_getZoneName()
 		callback(_Scheduler_succeed(name));
 	});
 }
+var $author$project$Main$NoOp = {$: 'NoOp'};
 var $author$project$Main$Tick = F2(
 	function (a, b) {
 		return {$: 'Tick', a: a, b: b};
 	});
-var $elm$core$Basics$EQ = {$: 'EQ'};
-var $elm$core$Basics$LT = {$: 'LT'};
 var $elm$core$List$cons = _List_cons;
 var $elm$core$Elm$JsArray$foldr = _JsArray_foldr;
 var $elm$core$Array$foldr = F3(
@@ -4499,15 +4498,11 @@ var $elm$core$Set$toList = function (_v0) {
 	var dict = _v0.a;
 	return $elm$core$Dict$keys(dict);
 };
+var $elm$core$Basics$EQ = {$: 'EQ'};
 var $elm$core$Basics$GT = {$: 'GT'};
+var $elm$core$Basics$LT = {$: 'LT'};
 var $MacCASOutreach$graphicsvg$GraphicSVG$App$InitTime = function (a) {
 	return {$: 'InitTime', a: a};
-};
-var $MacCASOutreach$graphicsvg$GraphicSVG$App$URLChanged = function (a) {
-	return {$: 'URLChanged', a: a};
-};
-var $MacCASOutreach$graphicsvg$GraphicSVG$App$URLRequest = function (a) {
-	return {$: 'URLRequest', a: a};
 };
 var $MacCASOutreach$graphicsvg$GraphicSVG$App$UserMsg = function (a) {
 	return {$: 'UserMsg', a: a};
@@ -8193,7 +8188,6 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$App$keyCheckerFunction = F2(
 			return $MacCASOutreach$graphicsvg$GraphicSVG$App$Up;
 		}
 	});
-var $elm$browser$Browser$Navigation$load = _Browser_load;
 var $elm$core$Dict$filter = F2(
 	function (isGood, dict) {
 		return A3(
@@ -8281,7 +8275,7 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$App$subtractTimeSeconds = F2(
 	function (t1, t0) {
 		return ($elm$time$Time$posixToMillis(t1) - $elm$time$Time$posixToMillis(t0)) / 1000;
 	});
-var $MacCASOutreach$graphicsvg$GraphicSVG$App$hiddenGameUpdate = F3(
+var $MacCASOutreach$graphicsvg$GraphicSVG$App$hiddenTickUpdate = F3(
 	function (userUpdate, msg, _v0) {
 		var userModel = _v0.a;
 		var hiddenModel = _v0.b;
@@ -8289,11 +8283,12 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$App$hiddenGameUpdate = F3(
 		switch (msg.$) {
 			case 'UserMsg':
 				var userMsg = msg.a;
+				var _v2 = A2(userUpdate, userMsg, userModel);
+				var newUserModel = _v2.a;
+				var newUserCmds = _v2.b;
 				return _Utils_Tuple2(
-					_Utils_Tuple2(
-						A2(userUpdate, userMsg, userModel),
-						hiddenModel),
-					$elm$core$Platform$Cmd$none);
+					_Utils_Tuple2(newUserModel, hiddenModel),
+					A2($elm$core$Platform$Cmd$map, $MacCASOutreach$graphicsvg$GraphicSVG$App$UserMsg, newUserCmds));
 			case 'InitTime':
 				var t = msg.a;
 				return _Utils_Tuple2(
@@ -8315,22 +8310,24 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$App$hiddenGameUpdate = F3(
 					$MacCASOutreach$graphicsvg$GraphicSVG$App$Key('a'),
 					$MacCASOutreach$graphicsvg$GraphicSVG$App$Key('d'));
 				var arrowKeys = A5($MacCASOutreach$graphicsvg$GraphicSVG$App$arrowChecker, keyChecker, $MacCASOutreach$graphicsvg$GraphicSVG$App$UpArrow, $MacCASOutreach$graphicsvg$GraphicSVG$App$DownArrow, $MacCASOutreach$graphicsvg$GraphicSVG$App$LeftArrow, $MacCASOutreach$graphicsvg$GraphicSVG$App$RightArrow);
-				var newModel = A2(
+				var _v3 = A2(
 					userUpdate,
 					A2(
 						hiddenModel.tick,
 						timeInSeconds,
 						_Utils_Tuple3(keyChecker, arrowKeys, wasd)),
 					userModel);
+				var newUserModel = _v3.a;
+				var newUserCmds = _v3.b;
 				return _Utils_Tuple2(
 					_Utils_Tuple2(
-						newModel,
+						newUserModel,
 						_Utils_update(
 							hiddenModel,
 							{
 								keys: $MacCASOutreach$graphicsvg$GraphicSVG$App$maintainKeyDict(hiddenModel.keys)
 							})),
-					$elm$core$Platform$Cmd$none);
+					A2($elm$core$Platform$Cmd$map, $MacCASOutreach$graphicsvg$GraphicSVG$App$UserMsg, newUserCmds));
 			case 'KeyDown':
 				var keyCode = msg.a;
 				return _Utils_Tuple2(
@@ -8353,20 +8350,7 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$App$hiddenGameUpdate = F3(
 								keys: A3($MacCASOutreach$graphicsvg$GraphicSVG$App$insertKeyDict, hiddenModel.keys, keyCode, $MacCASOutreach$graphicsvg$GraphicSVG$App$WentUp)
 							})),
 					$elm$core$Platform$Cmd$none);
-			case 'URLRequest':
-				var urlreq = msg.a;
-				if (urlreq.$ === 'External') {
-					var url = urlreq.a;
-					return _Utils_Tuple2(
-						_Utils_Tuple2(userModel, hiddenModel),
-						$elm$browser$Browser$Navigation$load(url));
-				} else {
-					return _Utils_Tuple2(
-						_Utils_Tuple2(userModel, hiddenModel),
-						$elm$core$Platform$Cmd$none);
-				}
 			default:
-				var url = msg.a;
 				return _Utils_Tuple2(
 					_Utils_Tuple2(userModel, hiddenModel),
 					$elm$core$Platform$Cmd$none);
@@ -8775,206 +8759,379 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$App$subs = _List_fromArray(
 			A2($elm$json$Json$Decode$field, 'keyCode', $elm$json$Json$Decode$int))),
 		$elm$browser$Browser$Events$onAnimationFrame($MacCASOutreach$graphicsvg$GraphicSVG$App$TickTime)
 	]);
-var $MacCASOutreach$graphicsvg$GraphicSVG$App$gameApp = F2(
+var $MacCASOutreach$graphicsvg$GraphicSVG$App$appWithTick = F2(
 	function (tickMsg, userApp) {
 		var userView = userApp.view;
+		var userUrlReq = userApp.onUrlRequest;
+		var userUrlChange = userApp.onUrlChange;
 		var userUpdate = userApp.update;
-		var userTitle = userApp.title;
-		var userInit = userApp.model;
+		var userSubs = userApp.subscriptions;
+		var userInit = userApp.init;
 		return $MacCASOutreach$graphicsvg$GraphicSVG$app(
 			{
 				init: F3(
-					function (_v0, _v1, navKey) {
+					function (flags, url, navKey) {
+						var userInitModel = A3(userInit, flags, url, navKey).a;
+						var userInitCmds = A3(userInit, flags, url, navKey).b;
 						return _Utils_Tuple2(
 							_Utils_Tuple2(
-								userInit,
+								userInitModel,
 								A2($MacCASOutreach$graphicsvg$GraphicSVG$App$initHiddenModel, tickMsg, navKey)),
-							A2($elm$core$Task$perform, $MacCASOutreach$graphicsvg$GraphicSVG$App$InitTime, $elm$time$Time$now));
+							$elm$core$Platform$Cmd$batch(
+								_List_fromArray(
+									[
+										A2($elm$core$Task$perform, $MacCASOutreach$graphicsvg$GraphicSVG$App$InitTime, $elm$time$Time$now),
+										A2($elm$core$Platform$Cmd$map, $MacCASOutreach$graphicsvg$GraphicSVG$App$UserMsg, userInitCmds)
+									])));
 					}),
-				onUrlChange: $MacCASOutreach$graphicsvg$GraphicSVG$App$URLChanged,
-				onUrlRequest: $MacCASOutreach$graphicsvg$GraphicSVG$App$URLRequest,
-				subscriptions: function (_v2) {
-					return $elm$core$Platform$Sub$batch($MacCASOutreach$graphicsvg$GraphicSVG$App$subs);
+				onUrlChange: A2($elm$core$Basics$composeL, $MacCASOutreach$graphicsvg$GraphicSVG$App$UserMsg, userUrlChange),
+				onUrlRequest: A2($elm$core$Basics$composeL, $MacCASOutreach$graphicsvg$GraphicSVG$App$UserMsg, userUrlReq),
+				subscriptions: function (_v0) {
+					var userModel = _v0.a;
+					return $elm$core$Platform$Sub$batch(
+						A2(
+							$elm$core$List$cons,
+							A2(
+								$elm$core$Platform$Sub$map,
+								$MacCASOutreach$graphicsvg$GraphicSVG$App$UserMsg,
+								userSubs(userModel)),
+							$MacCASOutreach$graphicsvg$GraphicSVG$App$subs));
 				},
-				update: $MacCASOutreach$graphicsvg$GraphicSVG$App$hiddenGameUpdate(userUpdate),
-				view: function (_v3) {
-					var userModel = _v3.a;
+				update: $MacCASOutreach$graphicsvg$GraphicSVG$App$hiddenTickUpdate(userUpdate),
+				view: function (_v1) {
+					var userModel = _v1.a;
+					var userViewE = userView(userModel);
 					return {
-						body: A2(
-							$MacCASOutreach$graphicsvg$GraphicSVG$mapCollage,
-							$MacCASOutreach$graphicsvg$GraphicSVG$App$UserMsg,
-							userView(userModel)),
-						title: userApp.title
+						body: A2($MacCASOutreach$graphicsvg$GraphicSVG$mapCollage, $MacCASOutreach$graphicsvg$GraphicSVG$App$UserMsg, userViewE.body),
+						title: userViewE.title
 					};
 				}
 			});
 	});
 var $author$project$Main$TrainStation = {$: 'TrainStation'};
-var $author$project$Main$init = {state: $author$project$Main$TrainStation, time: 0};
+var $elm$json$Json$Encode$string = _Json_wrap;
+var $author$project$Main$sendSpeech = _Platform_outgoingPort('sendSpeech', $elm$json$Json$Encode$string);
+var $author$project$Main$init = F3(
+	function (_v0, _v1, _v2) {
+		return _Utils_Tuple2(
+			{state: $author$project$Main$TrainStation, time: 0},
+			$author$project$Main$sendSpeech('You are at TrainStation. You may proceed to either ButtercupWay or DaffodilWay.'));
+	});
+var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
+var $author$project$Main$subscriptions = function (_v0) {
+	return $elm$core$Platform$Sub$none;
+};
 var $author$project$Main$BullrushWay = {$: 'BullrushWay'};
 var $author$project$Main$ButtercupWay = {$: 'ButtercupWay'};
 var $author$project$Main$DaffodilWay = {$: 'DaffodilWay'};
 var $author$project$Main$FireweedWay = {$: 'FireweedWay'};
 var $author$project$Main$LillyPond = {$: 'LillyPond'};
 var $author$project$Main$MountainPass = {$: 'MountainPass'};
+var $author$project$Main$formatListWithOr = function (list) {
+	var _v0 = $elm$core$List$reverse(list);
+	if (!_v0.b) {
+		return '';
+	} else {
+		if (!_v0.b.b) {
+			var last = _v0.a;
+			return last;
+		} else {
+			var last = _v0.a;
+			var rest = _v0.b;
+			return A2(
+				$elm$core$String$join,
+				', ',
+				$elm$core$List$reverse(rest)) + (', or ' + last);
+		}
+	}
+};
+var $author$project$Main$abbrToStateStr = function (abbr) {
+	switch (abbr) {
+		case 'TS':
+			return 'TrainStation';
+		case 'BCW':
+			return 'ButtercupWay';
+		case 'DW':
+			return 'DaffodilWay';
+		case 'MP':
+			return 'MountainPass';
+		case 'FW':
+			return 'FireweedWay';
+		case 'BW':
+			return 'BullrushWay';
+		case 'LP':
+			return 'LillyPond';
+		default:
+			return '';
+	}
+};
+var $elm$core$List$filter = F2(
+	function (isGood, list) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (x, xs) {
+					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
+				}),
+			_List_Nil,
+			list);
+	});
+var $elm$core$String$replace = F3(
+	function (before, after, string) {
+		return A2(
+			$elm$core$String$join,
+			after,
+			A2($elm$core$String$split, before, string));
+	});
+var $author$project$Main$stateToAbbr = function (state) {
+	switch (state.$) {
+		case 'TrainStation':
+			return 'TS';
+		case 'ButtercupWay':
+			return 'BCW';
+		case 'DaffodilWay':
+			return 'DW';
+		case 'MountainPass':
+			return 'MP';
+		case 'FireweedWay':
+			return 'FW';
+		case 'BullrushWay':
+			return 'BW';
+		default:
+			return 'LP';
+	}
+};
+var $author$project$Main$nextStates = function (state) {
+	var msgs = _List_fromArray(
+		['TS2BCW', 'BCW2TS', 'TS2DW', 'DW2TS', 'DW2BCW', 'BW2DW', 'BW2MP', 'MP2DW', 'MP2FW', 'FW2MP', 'FW2BW', 'BW2FW', 'MP2BW', 'LP2BW', 'BW2LP']);
+	var abbr = $author$project$Main$stateToAbbr(state);
+	return A2(
+		$elm$core$List$map,
+		$author$project$Main$abbrToStateStr,
+		A2(
+			$elm$core$List$map,
+			A2($elm$core$String$replace, abbr + '2', ''),
+			A2(
+				$elm$core$List$filter,
+				$elm$core$String$startsWith(abbr),
+				msgs)));
+};
+var $author$project$Main$stateToStr = function (state) {
+	switch (state.$) {
+		case 'TrainStation':
+			return 'TrainStation';
+		case 'ButtercupWay':
+			return 'ButtercupWay';
+		case 'DaffodilWay':
+			return 'DaffodilWay';
+		case 'MountainPass':
+			return 'MountainPass';
+		case 'FireweedWay':
+			return 'FireweedWay';
+		case 'BullrushWay':
+			return 'BullrushWay';
+		default:
+			return 'LillyPond';
+	}
+};
+var $author$project$Main$stateToSpeechStr = function (state) {
+	var nextStr = $author$project$Main$formatListWithOr(
+		$author$project$Main$nextStates(state));
+	var current = $author$project$Main$stateToStr(state);
+	return 'You are at ' + (current + ('. You may proceed to either ' + (nextStr + '.')));
+};
 var $author$project$Main$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
 			case 'Tick':
 				var t = msg.a;
-				return _Utils_update(
-					model,
-					{time: t});
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{time: t}),
+					$elm$core$Platform$Cmd$none);
 			case 'TS2BCW':
 				var _v1 = model.state;
 				if (_v1.$ === 'TrainStation') {
-					return _Utils_update(
-						model,
-						{state: $author$project$Main$ButtercupWay});
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{state: $author$project$Main$ButtercupWay}),
+						$author$project$Main$sendSpeech(
+							$author$project$Main$stateToSpeechStr($author$project$Main$ButtercupWay)));
 				} else {
-					var otherwise = _v1;
-					return model;
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'BCW2TS':
 				var _v2 = model.state;
 				if (_v2.$ === 'ButtercupWay') {
-					return _Utils_update(
-						model,
-						{state: $author$project$Main$TrainStation});
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{state: $author$project$Main$TrainStation}),
+						$author$project$Main$sendSpeech(
+							$author$project$Main$stateToSpeechStr($author$project$Main$TrainStation)));
 				} else {
-					var otherwise = _v2;
-					return model;
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'TS2DW':
 				var _v3 = model.state;
 				if (_v3.$ === 'TrainStation') {
-					return _Utils_update(
-						model,
-						{state: $author$project$Main$DaffodilWay});
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{state: $author$project$Main$DaffodilWay}),
+						$author$project$Main$sendSpeech(
+							$author$project$Main$stateToSpeechStr($author$project$Main$DaffodilWay)));
 				} else {
-					var otherwise = _v3;
-					return model;
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'DW2TS':
 				var _v4 = model.state;
 				if (_v4.$ === 'DaffodilWay') {
-					return _Utils_update(
-						model,
-						{state: $author$project$Main$TrainStation});
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{state: $author$project$Main$TrainStation}),
+						$author$project$Main$sendSpeech(
+							$author$project$Main$stateToSpeechStr($author$project$Main$TrainStation)));
 				} else {
-					var otherwise = _v4;
-					return model;
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'DW2BCW':
 				var _v5 = model.state;
 				if (_v5.$ === 'DaffodilWay') {
-					return _Utils_update(
-						model,
-						{state: $author$project$Main$ButtercupWay});
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{state: $author$project$Main$ButtercupWay}),
+						$author$project$Main$sendSpeech(
+							$author$project$Main$stateToSpeechStr($author$project$Main$ButtercupWay)));
 				} else {
-					var otherwise = _v5;
-					return model;
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'BW2DW':
 				var _v6 = model.state;
 				if (_v6.$ === 'ButtercupWay') {
-					return _Utils_update(
-						model,
-						{state: $author$project$Main$DaffodilWay});
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{state: $author$project$Main$DaffodilWay}),
+						$author$project$Main$sendSpeech(
+							$author$project$Main$stateToSpeechStr($author$project$Main$DaffodilWay)));
 				} else {
-					var otherwise = _v6;
-					return model;
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
-			case 'BWMP':
+			case 'BW2MP':
 				var _v7 = model.state;
 				if (_v7.$ === 'ButtercupWay') {
-					return _Utils_update(
-						model,
-						{state: $author$project$Main$MountainPass});
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{state: $author$project$Main$MountainPass}),
+						$author$project$Main$sendSpeech(
+							$author$project$Main$stateToSpeechStr($author$project$Main$MountainPass)));
 				} else {
-					var otherwise = _v7;
-					return model;
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'MP2DW':
 				var _v8 = model.state;
 				if (_v8.$ === 'MountainPass') {
-					return _Utils_update(
-						model,
-						{state: $author$project$Main$DaffodilWay});
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{state: $author$project$Main$DaffodilWay}),
+						$author$project$Main$sendSpeech(
+							$author$project$Main$stateToSpeechStr($author$project$Main$DaffodilWay)));
 				} else {
-					var otherwise = _v8;
-					return model;
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'MP2FW':
 				var _v9 = model.state;
 				if (_v9.$ === 'MountainPass') {
-					return _Utils_update(
-						model,
-						{state: $author$project$Main$FireweedWay});
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{state: $author$project$Main$FireweedWay}),
+						$author$project$Main$sendSpeech(
+							$author$project$Main$stateToSpeechStr($author$project$Main$FireweedWay)));
 				} else {
-					var otherwise = _v9;
-					return model;
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'FW2MP':
 				var _v10 = model.state;
 				if (_v10.$ === 'FireweedWay') {
-					return _Utils_update(
-						model,
-						{state: $author$project$Main$MountainPass});
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{state: $author$project$Main$MountainPass}),
+						$author$project$Main$sendSpeech(
+							$author$project$Main$stateToSpeechStr($author$project$Main$MountainPass)));
 				} else {
-					var otherwise = _v10;
-					return model;
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'FW2BW':
 				var _v11 = model.state;
 				if (_v11.$ === 'FireweedWay') {
-					return _Utils_update(
-						model,
-						{state: $author$project$Main$BullrushWay});
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{state: $author$project$Main$BullrushWay}),
+						$author$project$Main$sendSpeech(
+							$author$project$Main$stateToSpeechStr($author$project$Main$BullrushWay)));
 				} else {
-					var otherwise = _v11;
-					return model;
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'BW2FW':
 				var _v12 = model.state;
 				if (_v12.$ === 'BullrushWay') {
-					return _Utils_update(
-						model,
-						{state: $author$project$Main$FireweedWay});
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{state: $author$project$Main$FireweedWay}),
+						$author$project$Main$sendSpeech(
+							$author$project$Main$stateToSpeechStr($author$project$Main$FireweedWay)));
 				} else {
-					var otherwise = _v12;
-					return model;
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'MP2BW':
 				var _v13 = model.state;
 				if (_v13.$ === 'MountainPass') {
-					return _Utils_update(
-						model,
-						{state: $author$project$Main$BullrushWay});
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{state: $author$project$Main$BullrushWay}),
+						$author$project$Main$sendSpeech(
+							$author$project$Main$stateToSpeechStr($author$project$Main$BullrushWay)));
 				} else {
-					var otherwise = _v13;
-					return model;
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'LP2BW':
 				var _v14 = model.state;
 				if (_v14.$ === 'LillyPond') {
-					return _Utils_update(
-						model,
-						{state: $author$project$Main$BullrushWay});
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{state: $author$project$Main$BullrushWay}),
+						$author$project$Main$sendSpeech(
+							$author$project$Main$stateToSpeechStr($author$project$Main$BullrushWay)));
 				} else {
-					var otherwise = _v14;
-					return model;
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
-			default:
+			case 'BW2LP':
 				var _v15 = model.state;
 				if (_v15.$ === 'BullrushWay') {
-					return _Utils_update(
-						model,
-						{state: $author$project$Main$LillyPond});
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{state: $author$project$Main$LillyPond}),
+						$author$project$Main$sendSpeech(
+							$author$project$Main$stateToSpeechStr($author$project$Main$LillyPond)));
 				} else {
-					var otherwise = _v15;
-					return model;
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
+			default:
+				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 		}
 	});
 var $MacCASOutreach$graphicsvg$GraphicSVG$collage = F3(
@@ -8985,7 +9142,7 @@ var $author$project$Main$BCW2TS = {$: 'BCW2TS'};
 var $author$project$Main$BW2DW = {$: 'BW2DW'};
 var $author$project$Main$BW2FW = {$: 'BW2FW'};
 var $author$project$Main$BW2LP = {$: 'BW2LP'};
-var $author$project$Main$BWMP = {$: 'BWMP'};
+var $author$project$Main$BW2MP = {$: 'BW2MP'};
 var $author$project$Main$DW2BCW = {$: 'DW2BCW'};
 var $author$project$Main$DW2TS = {$: 'DW2TS'};
 var $author$project$Main$FW2BW = {$: 'FW2BW'};
@@ -9191,7 +9348,7 @@ var $author$project$Main$myShapes = function (model) {
 								])))),
 					A2(
 					$MacCASOutreach$graphicsvg$GraphicSVG$notifyTap,
-					$author$project$Main$BWMP,
+					$author$project$Main$BW2MP,
 					A2(
 						$MacCASOutreach$graphicsvg$GraphicSVG$move,
 						_Utils_Tuple2(50, -25),
@@ -9212,7 +9369,7 @@ var $author$project$Main$myShapes = function (model) {
 											$MacCASOutreach$graphicsvg$GraphicSVG$size,
 											8,
 											$MacCASOutreach$graphicsvg$GraphicSVG$centered(
-												$MacCASOutreach$graphicsvg$GraphicSVG$text('BWMP')))))
+												$MacCASOutreach$graphicsvg$GraphicSVG$text('BW2MP')))))
 								]))))
 				]);
 		case 'DaffodilWay':
@@ -9513,15 +9670,29 @@ var $author$project$Main$myShapes = function (model) {
 	}
 };
 var $author$project$Main$view = function (model) {
-	return A3(
-		$MacCASOutreach$graphicsvg$GraphicSVG$collage,
-		500,
-		500,
-		$author$project$Main$myShapes(model));
+	return {
+		body: A3(
+			$MacCASOutreach$graphicsvg$GraphicSVG$collage,
+			500,
+			500,
+			$author$project$Main$myShapes(model)),
+		title: 'My App'
+	};
 };
 var $author$project$Main$main = A2(
-	$MacCASOutreach$graphicsvg$GraphicSVG$App$gameApp,
+	$MacCASOutreach$graphicsvg$GraphicSVG$App$appWithTick,
 	$author$project$Main$Tick,
-	{model: $author$project$Main$init, title: 'My App', update: $author$project$Main$update, view: $author$project$Main$view});
+	{
+		init: $author$project$Main$init,
+		onUrlChange: function (_v0) {
+			return $author$project$Main$NoOp;
+		},
+		onUrlRequest: function (_v1) {
+			return $author$project$Main$NoOp;
+		},
+		subscriptions: $author$project$Main$subscriptions,
+		update: $author$project$Main$update,
+		view: $author$project$Main$view
+	});
 _Platform_export({'Main':{'init':$author$project$Main$main(
 	$elm$json$Json$Decode$succeed(_Utils_Tuple0))(0)}});}(this));

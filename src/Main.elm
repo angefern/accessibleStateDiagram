@@ -1,11 +1,12 @@
-module Main exposing (..)
+port module Main exposing (..)
 
 import GraphicSVG exposing (..)
 import GraphicSVG.App exposing (..)
 import Browser
 import Browser.Dom exposing (Viewport, getViewportOf)
 import Browser.Events exposing (onKeyDown, onKeyPress, onKeyUp, onResize, onAnimationFrame)
-import Browser.Navigation exposing (Key)
+import Browser.Navigation exposing (..)
+import Url exposing (..)
 
 import List exposing (range)
 import String
@@ -17,8 +18,13 @@ import Time exposing (..)
 import Html
 import Svg
 import Svg.Attributes as SA
+import String exposing (startsWith)
 
 
+port sendSpeech : String -> Cmd msg
+
+
+myShapes : Model -> List (Shape Msg)
 myShapes model =
     case model.state of
         TrainStation  ->
@@ -82,14 +88,14 @@ myShapes model =
                   [
                        roundedRect 40 20 5
                             |> filled green
-                  ,    text "BWMP"
+                  ,    text "BW2MP"
                             |> centered
                             |> size 8
                             |> filled black
                             |> move(0, -3)
                   ]
                      |> move (50, -25)
-                     |> notifyTap BWMP
+                     |> notifyTap BW2MP
             ]
         DaffodilWay  ->
             [ text "DaffodilWay"
@@ -244,7 +250,7 @@ type Msg = Tick Float GetKeyState
          | DW2TS
          | DW2BCW
          | BW2DW
-         | BWMP
+         | BW2MP
          | MP2DW
          | MP2FW
          | FW2MP
@@ -253,6 +259,7 @@ type Msg = Tick Float GetKeyState
          | MP2BW
          | LP2BW
          | BW2LP
+         | NoOp
 
 type State = TrainStation
            | ButtercupWay
@@ -262,114 +269,208 @@ type State = TrainStation
            | BullrushWay
            | LillyPond
 
+
+stateToStr : State -> String
+stateToStr state =
+    case state of
+        TrainStation  -> "TrainStation"
+        ButtercupWay  -> "ButtercupWay"
+        DaffodilWay   -> "DaffodilWay"
+        MountainPass  -> "MountainPass"
+        FireweedWay   -> "FireweedWay"
+        BullrushWay   -> "BullrushWay"
+        LillyPond     -> "LillyPond"
+
+stateToAbbr : State -> String
+stateToAbbr state = 
+    case state of 
+        TrainStation -> "TS"
+        ButtercupWay -> "BCW"
+        DaffodilWay -> "DW"
+        MountainPass -> "MP"
+        FireweedWay -> "FW"
+        BullrushWay -> "BW"
+        LillyPond -> "LP"
+
+abbrToStateStr : String -> String
+abbrToStateStr abbr = 
+    case abbr of 
+        "TS"  -> "TrainStation"
+        "BCW" -> "ButtercupWay"
+        "DW"  -> "DaffodilWay"
+        "MP"  -> "MountainPass"
+        "FW"  -> "FireweedWay"
+        "BW"  -> "BullrushWay"
+        "LP"  -> "LillyPond"
+        _ -> ""
+
+
+nextStates : State -> List String
+nextStates state = 
+    let
+        abbr = stateToAbbr state
+        msgs = [ "TS2BCW", "BCW2TS", "TS2DW"
+                , "DW2TS", "DW2BCW", "BW2DW"
+                , "BW2MP", "MP2DW", "MP2FW"
+                , "FW2MP", "FW2BW", "BW2FW"
+                , "MP2BW", "LP2BW", "BW2LP"
+                ]
+    in List.filter (startsWith abbr) msgs
+        |> List.map (String.replace (abbr ++ "2") "")
+        |> List.map abbrToStateStr
+
+formatListWithOr : List String -> String
+formatListWithOr list =
+    case List.reverse list of
+        [] ->
+            ""
+        last :: [] ->
+            last
+        last :: rest ->
+            String.join ", " (List.reverse rest) ++ ", or " ++ last
+
+
+stateToSpeechStr : State -> String
+stateToSpeechStr state =
+    let
+        current = stateToStr state
+        nextStr = formatListWithOr (nextStates state)
+    in
+        "You are at " ++ current ++ ". You may proceed to either " ++ nextStr ++ "."
+
+subscriptions : Model -> Sub Msg
+subscriptions _ =
+  Sub.none
+
+update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
     case msg of
         Tick t _ ->
-            { model | time = t }
-        TS2BCW  ->
-            case model.state of
-                TrainStation  ->
-                    { model | state = ButtercupWay  }
-                otherwise ->
-                    model
-        BCW2TS  ->
-            case model.state of
-                ButtercupWay  ->
-                    { model | state = TrainStation  }
+            ( { model | time = t }, Cmd.none )
 
-                otherwise ->
-                    model
-        TS2DW  ->
+        TS2BCW ->
             case model.state of
-                TrainStation  ->
-                    { model | state = DaffodilWay  }
+                TrainStation ->
+                    ( { model | state = ButtercupWay }, sendSpeech (stateToSpeechStr ButtercupWay) )
 
-                otherwise ->
-                    model
-        DW2TS  ->
+                _ ->
+                    ( model, Cmd.none )
+
+        BCW2TS ->
             case model.state of
-                DaffodilWay  ->
-                    { model | state = TrainStation  }
+                ButtercupWay ->
+                    ( { model | state = TrainStation }, sendSpeech (stateToSpeechStr TrainStation) )
 
-                otherwise ->
-                    model
-        DW2BCW  ->
+                _ ->
+                    ( model, Cmd.none )
+
+        TS2DW ->
             case model.state of
-                DaffodilWay  ->
-                    { model | state = ButtercupWay  }
+                TrainStation ->
+                    ( { model | state = DaffodilWay }, sendSpeech (stateToSpeechStr DaffodilWay) )
 
-                otherwise ->
-                    model
-        BW2DW  ->
+                _ ->
+                    ( model, Cmd.none )
+
+        DW2TS ->
             case model.state of
-                ButtercupWay  ->
-                    { model | state = DaffodilWay  }
+                DaffodilWay ->
+                    ( { model | state = TrainStation }, sendSpeech (stateToSpeechStr TrainStation) )
 
-                otherwise ->
-                    model
-        BWMP  ->
+                _ ->
+                    ( model, Cmd.none )
+
+        DW2BCW ->
             case model.state of
-                ButtercupWay  ->
-                    { model | state = MountainPass  }
+                DaffodilWay ->
+                    ( { model | state = ButtercupWay }, sendSpeech (stateToSpeechStr ButtercupWay) )
 
-                otherwise ->
-                    model
-        MP2DW  ->
+                _ ->
+                    ( model, Cmd.none )
+
+        BW2DW ->
             case model.state of
-                MountainPass  ->
-                    { model | state = DaffodilWay  }
+                ButtercupWay ->
+                    ( { model | state = DaffodilWay }, sendSpeech (stateToSpeechStr DaffodilWay) )
 
-                otherwise ->
-                    model
-        MP2FW  ->
+                _ ->
+                    ( model, Cmd.none )
+
+        BW2MP ->
             case model.state of
-                MountainPass  ->
-                    { model | state = FireweedWay  }
+                ButtercupWay ->
+                    ( { model | state = MountainPass }, sendSpeech (stateToSpeechStr MountainPass) )
 
-                otherwise ->
-                    model
-        FW2MP  ->
+                _ ->
+                    ( model, Cmd.none )
+
+        MP2DW ->
             case model.state of
-                FireweedWay  ->
-                    { model | state = MountainPass  }
+                MountainPass ->
+                    ( { model | state = DaffodilWay }, sendSpeech (stateToSpeechStr DaffodilWay) )
 
-                otherwise ->
-                    model
-        FW2BW  ->
+                _ ->
+                    ( model, Cmd.none )
+
+        MP2FW ->
             case model.state of
-                FireweedWay  ->
-                    { model | state = BullrushWay  }
+                MountainPass ->
+                    ( { model | state = FireweedWay }, sendSpeech (stateToSpeechStr FireweedWay) )
 
-                otherwise ->
-                    model
-        BW2FW  ->
+                _ ->
+                    ( model, Cmd.none )
+
+        FW2MP ->
             case model.state of
-                BullrushWay  ->
-                    { model | state = FireweedWay  }
+                FireweedWay ->
+                    ( { model | state = MountainPass }, sendSpeech (stateToSpeechStr MountainPass) )
 
-                otherwise ->
-                    model
-        MP2BW  ->
+                _ ->
+                    ( model, Cmd.none )
+
+        FW2BW ->
             case model.state of
-                MountainPass  ->
-                    { model | state = BullrushWay  }
+                FireweedWay ->
+                    ( { model | state = BullrushWay }, sendSpeech (stateToSpeechStr BullrushWay) )
 
-                otherwise ->
-                    model
-        LP2BW  ->
+                _ ->
+                    ( model, Cmd.none )
+
+        BW2FW ->
             case model.state of
-                LillyPond  ->
-                    { model | state = BullrushWay  }
+                BullrushWay ->
+                    ( { model | state = FireweedWay }, sendSpeech (stateToSpeechStr FireweedWay) )
 
-                otherwise ->
-                    model
-        BW2LP  ->
+                _ ->
+                    ( model, Cmd.none )
+
+        MP2BW ->
             case model.state of
-                BullrushWay  ->
-                    { model | state = LillyPond  }
+                MountainPass ->
+                    ( { model | state = BullrushWay }, sendSpeech (stateToSpeechStr BullrushWay) )
 
-                otherwise ->
-                    model
+                _ ->
+                    ( model, Cmd.none )
+
+        LP2BW ->
+            case model.state of
+                LillyPond ->
+                    ( { model | state = BullrushWay }, sendSpeech (stateToSpeechStr BullrushWay) )
+
+                _ ->
+                    ( model, Cmd.none )
+
+        BW2LP ->
+            case model.state of
+                BullrushWay ->
+                    ( { model | state = LillyPond }, sendSpeech (stateToSpeechStr LillyPond) )
+
+                _ ->
+                    ( model, Cmd.none )
+                    
+        NoOp ->
+            ( model, Cmd.none )
+
 
 type alias Model =
     { time : Float
@@ -378,21 +479,25 @@ type alias Model =
 
 type alias Point = (Float, Float)
 
-init : Model
-init = { time = 0
-       , state = TrainStation
-       }
+init : () -> Url.Url -> Browser.Navigation.Key -> ( Model, Cmd Msg ) --?
+init _ _ _ = ({ time = 0, state = TrainStation }, sendSpeech "You are at TrainStation. You may proceed to either ButtercupWay or DaffodilWay.")
 
 
+view : Model -> { title : String, body : Collage Msg }
 view model = 
-    collage 500 500 (myShapes model)
+    { title = "My App", 
+      body = collage 500 500 (myShapes model) 
+    }
 
 
+main : AppWithTick () Model Msg
 main = 
-    gameApp Tick
+    appWithTick Tick
         { 
-            model = init,
-            view = view,  
+            init = init,
             update = update, 
-            title = "My App"
+            view = view, 
+            subscriptions = subscriptions, 
+            onUrlRequest = \_ -> NoOp, 
+            onUrlChange = \_ -> NoOp
         }
