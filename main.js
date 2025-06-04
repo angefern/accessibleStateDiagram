@@ -8894,7 +8894,7 @@ var $author$project$Main$stateToAbbr = function (state) {
 };
 var $author$project$Main$nextStates = function (state) {
 	var msgs = _List_fromArray(
-		['TS2BCW', 'BCW2TS', 'TS2DW', 'DW2TS', 'DW2BCW', 'BW2DW', 'BW2MP', 'MP2DW', 'MP2FW', 'FW2MP', 'FW2BW', 'BW2FW', 'MP2BW', 'LP2BW', 'BW2LP']);
+		['TS2BCW', 'BCW2TS', 'TS2DW', 'DW2TS', 'DW2BCW', 'BCW2DW', 'BCW2MP', 'MP2DW', 'MP2FW', 'FW2MP', 'FW2BW', 'BW2FW', 'MP2BW', 'LP2BW', 'BW2LP']);
 	var abbr = $author$project$Main$stateToAbbr(state);
 	return A2(
 		$elm$core$List$map,
@@ -9129,6 +9129,8 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$collage = F3(
 	function (w, h, shapes) {
 		return A3($MacCASOutreach$graphicsvg$GraphicSVG$Collage, w, h, shapes);
 	});
+var $author$project$Main$BCW2DW = {$: 6};
+var $author$project$Main$BCW2MP = {$: 7};
 var $author$project$Main$BCW2TS = {$: 2};
 var $author$project$Main$BW2FW = {$: 12};
 var $author$project$Main$BW2LP = {$: 15};
@@ -9309,6 +9311,56 @@ var $author$project$Main$myShapes = function (model) {
 											8,
 											$MacCASOutreach$graphicsvg$GraphicSVG$centered(
 												$MacCASOutreach$graphicsvg$GraphicSVG$text('BCW2TS')))))
+								])))),
+					A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$notifyTap,
+					$author$project$Main$BCW2DW,
+					A2(
+						$MacCASOutreach$graphicsvg$GraphicSVG$move,
+						_Utils_Tuple2(0, -25),
+						$MacCASOutreach$graphicsvg$GraphicSVG$group(
+							_List_fromArray(
+								[
+									A2(
+									$MacCASOutreach$graphicsvg$GraphicSVG$filled,
+									$MacCASOutreach$graphicsvg$GraphicSVG$green,
+									A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 40, 20, 5)),
+									A2(
+									$MacCASOutreach$graphicsvg$GraphicSVG$move,
+									_Utils_Tuple2(0, -3),
+									A2(
+										$MacCASOutreach$graphicsvg$GraphicSVG$filled,
+										$MacCASOutreach$graphicsvg$GraphicSVG$black,
+										A2(
+											$MacCASOutreach$graphicsvg$GraphicSVG$size,
+											8,
+											$MacCASOutreach$graphicsvg$GraphicSVG$centered(
+												$MacCASOutreach$graphicsvg$GraphicSVG$text('BCW2DW')))))
+								])))),
+					A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$notifyTap,
+					$author$project$Main$BCW2MP,
+					A2(
+						$MacCASOutreach$graphicsvg$GraphicSVG$move,
+						_Utils_Tuple2(50, -25),
+						$MacCASOutreach$graphicsvg$GraphicSVG$group(
+							_List_fromArray(
+								[
+									A2(
+									$MacCASOutreach$graphicsvg$GraphicSVG$filled,
+									$MacCASOutreach$graphicsvg$GraphicSVG$green,
+									A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 40, 20, 5)),
+									A2(
+									$MacCASOutreach$graphicsvg$GraphicSVG$move,
+									_Utils_Tuple2(0, -3),
+									A2(
+										$MacCASOutreach$graphicsvg$GraphicSVG$filled,
+										$MacCASOutreach$graphicsvg$GraphicSVG$black,
+										A2(
+											$MacCASOutreach$graphicsvg$GraphicSVG$size,
+											8,
+											$MacCASOutreach$graphicsvg$GraphicSVG$centered(
+												$MacCASOutreach$graphicsvg$GraphicSVG$text('BCW2MP')))))
 								]))))
 				]);
 		case 2:

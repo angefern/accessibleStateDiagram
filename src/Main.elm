@@ -72,6 +72,30 @@ myShapes model =
                   ]
                      |> move (-50, -25)
                      |> notifyTap BCW2TS
+            , group
+                  [
+                       roundedRect 40 20 5
+                            |> filled green
+                  ,    text "BCW2DW"
+                            |> centered
+                            |> size 8
+                            |> filled black
+                            |> move(0, -3)
+                  ]
+                     |> move (0, -25)
+                     |> notifyTap BCW2DW
+            , group
+                  [
+                       roundedRect 40 20 5
+                            |> filled green
+                  ,    text "BCW2MP"
+                            |> centered
+                            |> size 8
+                            |> filled black
+                            |> move(0, -3)
+                  ]
+                     |> move (50, -25)
+                     |> notifyTap BCW2MP
             ]
         DaffodilWay  ->
             [ text "DaffodilWay"
@@ -225,8 +249,8 @@ type Msg = Tick Float GetKeyState
          | TS2DW
          | DW2TS
          | DW2BCW
-         | BW2DW
-         | BW2MP
+         | BCW2DW
+         | BCW2MP
          | MP2DW
          | MP2FW
          | FW2MP
@@ -286,8 +310,8 @@ nextStates state =
     let
         abbr = stateToAbbr state
         msgs = [ "TS2BCW", "BCW2TS", "TS2DW"
-                , "DW2TS", "DW2BCW", "BW2DW"
-                , "BW2MP", "MP2DW", "MP2FW"
+                , "DW2TS", "DW2BCW", "BCW2DW"
+                , "BCW2MP", "MP2DW", "MP2FW"
                 , "FW2MP", "FW2BW", "BW2FW"
                 , "MP2BW", "LP2BW", "BW2LP"
                 ]
@@ -364,7 +388,7 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
-        BW2DW ->
+        BCW2DW ->
             case model.state of
                 ButtercupWay ->
                     ( { model | state = DaffodilWay }, sendSpeech (stateToSpeechStr DaffodilWay) )
@@ -372,7 +396,7 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
-        BW2MP ->
+        BCW2MP ->
             case model.state of
                 ButtercupWay ->
                     ( { model | state = MountainPass }, sendSpeech (stateToSpeechStr MountainPass) )
