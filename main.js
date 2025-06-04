@@ -519,11 +519,11 @@ function _Debug_crash_UNUSED(identifier, fact1, fact2, fact3, fact4)
 
 function _Debug_regionToString(region)
 {
-	if (region.V.F === region.aa.F)
+	if (region.X.H === region.ab.H)
 	{
-		return 'on line ' + region.V.F;
+		return 'on line ' + region.X.H;
 	}
-	return 'on lines ' + region.V.F + ' through ' + region.aa.F;
+	return 'on lines ' + region.X.H + ' through ' + region.ab.H;
 }
 
 
@@ -1857,9 +1857,9 @@ var _Platform_worker = F4(function(impl, flagDecoder, debugMetadata, args)
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.aM,
-		impl.aU,
-		impl.aS,
+		impl.aN,
+		impl.aV,
+		impl.aT,
 		function() { return function() {} }
 	);
 });
@@ -2719,9 +2719,9 @@ var _VirtualDom_mapEventTuple = F2(function(func, tuple)
 var _VirtualDom_mapEventRecord = F2(function(func, record)
 {
 	return {
-		o: func(record.o),
-		W: record.W,
-		S: record.S
+		q: func(record.q),
+		Y: record.Y,
+		U: record.U
 	}
 });
 
@@ -2989,11 +2989,11 @@ function _VirtualDom_makeCallback(eventNode, initialHandler)
 		// 3 = Custom
 
 		var value = result.a;
-		var message = !tag ? value : tag < 3 ? value.a : value.o;
-		var stopPropagation = tag == 1 ? value.b : tag == 3 && value.W;
+		var message = !tag ? value : tag < 3 ? value.a : value.q;
+		var stopPropagation = tag == 1 ? value.b : tag == 3 && value.Y;
 		var currentEventNode = (
 			stopPropagation && event.stopPropagation(),
-			(tag == 2 ? value.b : tag == 3 && value.S) && event.preventDefault(),
+			(tag == 2 ? value.b : tag == 3 && value.U) && event.preventDefault(),
 			eventNode
 		);
 		var tagger;
@@ -3943,11 +3943,11 @@ var _Browser_element = _Debugger_element || F4(function(impl, flagDecoder, debug
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.aM,
-		impl.aU,
-		impl.aS,
+		impl.aN,
+		impl.aV,
+		impl.aT,
 		function(sendToApp, initialModel) {
-			var view = impl.aV;
+			var view = impl.aW;
 			/**/
 			var domNode = args['node'];
 			//*/
@@ -3979,12 +3979,12 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.aM,
-		impl.aU,
-		impl.aS,
+		impl.aN,
+		impl.aV,
+		impl.aT,
 		function(sendToApp, initialModel) {
-			var divertHrefToApp = impl.U && impl.U(sendToApp)
-			var view = impl.aV;
+			var divertHrefToApp = impl.W && impl.W(sendToApp)
+			var view = impl.aW;
 			var title = _VirtualDom_doc.title;
 			var bodyNode = _VirtualDom_doc.body;
 			var currNode = _VirtualDom_virtualize(bodyNode);
@@ -3992,12 +3992,12 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 			{
 				_VirtualDom_divertHrefToApp = divertHrefToApp;
 				var doc = view(model);
-				var nextNode = _VirtualDom_node('body')(_List_Nil)(doc.aD);
+				var nextNode = _VirtualDom_node('body')(_List_Nil)(doc.aE);
 				var patches = _VirtualDom_diff(currNode, nextNode);
 				bodyNode = _VirtualDom_applyPatches(bodyNode, currNode, patches, sendToApp);
 				currNode = nextNode;
 				_VirtualDom_divertHrefToApp = 0;
-				(title !== doc.aT) && (_VirtualDom_doc.title = title = doc.aT);
+				(title !== doc.aU) && (_VirtualDom_doc.title = title = doc.aU);
 			});
 		}
 	);
@@ -4053,12 +4053,12 @@ function _Browser_makeAnimator(model, draw)
 
 function _Browser_application(impl)
 {
-	var onUrlChange = impl.aO;
-	var onUrlRequest = impl.aP;
+	var onUrlChange = impl.aP;
+	var onUrlRequest = impl.aQ;
 	var key = function() { key.a(onUrlChange(_Browser_getUrl())); };
 
 	return _Browser_document({
-		U: function(sendToApp)
+		W: function(sendToApp)
 		{
 			key.a = sendToApp;
 			_Browser_window.addEventListener('popstate', key);
@@ -4074,9 +4074,9 @@ function _Browser_application(impl)
 					var next = $elm$url$Url$fromString(href).a;
 					sendToApp(onUrlRequest(
 						(next
-							&& curr.aq === next.aq
-							&& curr.ad === next.ad
-							&& curr.an.a === next.an.a
+							&& curr.ar === next.ar
+							&& curr.ae === next.ae
+							&& curr.ao.a === next.ao.a
 						)
 							? $elm$browser$Browser$Internal(next)
 							: $elm$browser$Browser$External(href)
@@ -4084,13 +4084,13 @@ function _Browser_application(impl)
 				}
 			});
 		},
-		aM: function(flags)
+		aN: function(flags)
 		{
-			return A3(impl.aM, flags, _Browser_getUrl(), key);
+			return A3(impl.aN, flags, _Browser_getUrl(), key);
 		},
+		aW: impl.aW,
 		aV: impl.aV,
-		aU: impl.aU,
-		aS: impl.aS
+		aT: impl.aT
 	});
 }
 
@@ -4156,17 +4156,17 @@ var _Browser_decodeEvent = F2(function(decoder, event)
 function _Browser_visibilityInfo()
 {
 	return (typeof _VirtualDom_doc.hidden !== 'undefined')
-		? { aK: 'hidden', aE: 'visibilitychange' }
+		? { aL: 'hidden', aF: 'visibilitychange' }
 		:
 	(typeof _VirtualDom_doc.mozHidden !== 'undefined')
-		? { aK: 'mozHidden', aE: 'mozvisibilitychange' }
+		? { aL: 'mozHidden', aF: 'mozvisibilitychange' }
 		:
 	(typeof _VirtualDom_doc.msHidden !== 'undefined')
-		? { aK: 'msHidden', aE: 'msvisibilitychange' }
+		? { aL: 'msHidden', aF: 'msvisibilitychange' }
 		:
 	(typeof _VirtualDom_doc.webkitHidden !== 'undefined')
-		? { aK: 'webkitHidden', aE: 'webkitvisibilitychange' }
-		: { aK: 'hidden', aE: 'visibilitychange' };
+		? { aL: 'webkitHidden', aF: 'webkitvisibilitychange' }
+		: { aL: 'hidden', aF: 'visibilitychange' };
 }
 
 
@@ -4247,12 +4247,12 @@ var _Browser_call = F2(function(functionName, id)
 function _Browser_getViewport()
 {
 	return {
-		av: _Browser_getScene(),
-		ay: {
-			az: _Browser_window.pageXOffset,
-			aA: _Browser_window.pageYOffset,
-			aW: _Browser_doc.documentElement.clientWidth,
-			aI: _Browser_doc.documentElement.clientHeight
+		aw: _Browser_getScene(),
+		az: {
+			aA: _Browser_window.pageXOffset,
+			aB: _Browser_window.pageYOffset,
+			aX: _Browser_doc.documentElement.clientWidth,
+			aJ: _Browser_doc.documentElement.clientHeight
 		}
 	};
 }
@@ -4262,8 +4262,8 @@ function _Browser_getScene()
 	var body = _Browser_doc.body;
 	var elem = _Browser_doc.documentElement;
 	return {
-		aW: Math.max(body.scrollWidth, body.offsetWidth, elem.scrollWidth, elem.offsetWidth, elem.clientWidth),
-		aI: Math.max(body.scrollHeight, body.offsetHeight, elem.scrollHeight, elem.offsetHeight, elem.clientHeight)
+		aX: Math.max(body.scrollWidth, body.offsetWidth, elem.scrollWidth, elem.offsetWidth, elem.clientWidth),
+		aJ: Math.max(body.scrollHeight, body.offsetHeight, elem.scrollHeight, elem.offsetHeight, elem.clientHeight)
 	};
 }
 
@@ -4286,15 +4286,15 @@ function _Browser_getViewportOf(id)
 	return _Browser_withNode(id, function(node)
 	{
 		return {
-			av: {
-				aW: node.scrollWidth,
-				aI: node.scrollHeight
+			aw: {
+				aX: node.scrollWidth,
+				aJ: node.scrollHeight
 			},
-			ay: {
-				az: node.scrollLeft,
-				aA: node.scrollTop,
-				aW: node.clientWidth,
-				aI: node.clientHeight
+			az: {
+				aA: node.scrollLeft,
+				aB: node.scrollTop,
+				aX: node.clientWidth,
+				aJ: node.clientHeight
 			}
 		};
 	});
@@ -4324,18 +4324,18 @@ function _Browser_getElement(id)
 		var x = _Browser_window.pageXOffset;
 		var y = _Browser_window.pageYOffset;
 		return {
-			av: _Browser_getScene(),
-			ay: {
-				az: x,
-				aA: y,
-				aW: _Browser_doc.documentElement.clientWidth,
-				aI: _Browser_doc.documentElement.clientHeight
+			aw: _Browser_getScene(),
+			az: {
+				aA: x,
+				aB: y,
+				aX: _Browser_doc.documentElement.clientWidth,
+				aJ: _Browser_doc.documentElement.clientHeight
 			},
-			aG: {
-				az: x + rect.left,
-				aA: y + rect.top,
-				aW: rect.width,
-				aI: rect.height
+			aH: {
+				aA: x + rect.left,
+				aB: y + rect.top,
+				aX: rect.width,
+				aJ: rect.height
 			}
 		};
 	});
@@ -4836,25 +4836,25 @@ var $elm$core$Array$treeFromBuilder = F2(
 	});
 var $elm$core$Array$builderToArray = F2(
 	function (reverseNodeList, builder) {
-		if (!builder.b) {
+		if (!builder.c) {
 			return A4(
 				$elm$core$Array$Array_elm_builtin,
-				$elm$core$Elm$JsArray$length(builder.c),
+				$elm$core$Elm$JsArray$length(builder.d),
 				$elm$core$Array$shiftStep,
 				$elm$core$Elm$JsArray$empty,
-				builder.c);
+				builder.d);
 		} else {
-			var treeLen = builder.b * $elm$core$Array$branchFactor;
+			var treeLen = builder.c * $elm$core$Array$branchFactor;
 			var depth = $elm$core$Basics$floor(
 				A2($elm$core$Basics$logBase, $elm$core$Array$branchFactor, treeLen - 1));
-			var correctNodeList = reverseNodeList ? $elm$core$List$reverse(builder.d) : builder.d;
-			var tree = A2($elm$core$Array$treeFromBuilder, correctNodeList, builder.b);
+			var correctNodeList = reverseNodeList ? $elm$core$List$reverse(builder.e) : builder.e;
+			var tree = A2($elm$core$Array$treeFromBuilder, correctNodeList, builder.c);
 			return A4(
 				$elm$core$Array$Array_elm_builtin,
-				$elm$core$Elm$JsArray$length(builder.c) + treeLen,
+				$elm$core$Elm$JsArray$length(builder.d) + treeLen,
 				A2($elm$core$Basics$max, 5, depth * $elm$core$Array$shiftStep),
 				tree,
-				builder.c);
+				builder.d);
 		}
 	});
 var $elm$core$Basics$idiv = _Basics_idiv;
@@ -4867,7 +4867,7 @@ var $elm$core$Array$initializeHelp = F5(
 				return A2(
 					$elm$core$Array$builderToArray,
 					false,
-					{d: nodeList, b: (len / $elm$core$Array$branchFactor) | 0, c: tail});
+					{e: nodeList, c: (len / $elm$core$Array$branchFactor) | 0, d: tail});
 			} else {
 				var leaf = $elm$core$Array$Leaf(
 					A3($elm$core$Elm$JsArray$initialize, $elm$core$Array$branchFactor, fromIndex, fn));
@@ -4934,7 +4934,7 @@ var $elm$url$Url$Http = 0;
 var $elm$url$Url$Https = 1;
 var $elm$url$Url$Url = F6(
 	function (protocol, host, port_, path, query, fragment) {
-		return {ac: fragment, ad: host, al: path, an: port_, aq: protocol, ar: query};
+		return {ad: fragment, ae: host, am: path, ao: port_, ar: protocol, as: query};
 	});
 var $elm$core$String$contains = _String_contains;
 var $elm$core$String$length = _String_length;
@@ -5223,10 +5223,10 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$convertCoords = F2(
 	function (_v0, gModel) {
 		var x = _v0.a;
 		var y = _v0.b;
-		var sw = gModel.L;
-		var sh = gModel.K;
-		var cw = gModel.y;
-		var ch = gModel.x;
+		var sw = gModel.N;
+		var sh = gModel.M;
+		var cw = gModel.A;
+		var ch = gModel.z;
 		var aspectout = (!(!sh)) ? (sw / sh) : (4 / 3);
 		var aspectin = (!(!ch)) ? (cw / ch) : (4 / 3);
 		var scaledInX = _Utils_cmp(aspectout, aspectin) < 0;
@@ -5266,8 +5266,8 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$getViewportSize = A2(
 			return $MacCASOutreach$graphicsvg$GraphicSVG$WindowResize(
 				$elm$core$Maybe$Just(
 					_Utils_Tuple2(
-						$elm$core$Basics$round(vp.ay.aW),
-						$elm$core$Basics$round(vp.ay.aI))));
+						$elm$core$Basics$round(vp.az.aX),
+						$elm$core$Basics$round(vp.az.aJ))));
 		} else {
 			return $MacCASOutreach$graphicsvg$GraphicSVG$NoOp;
 		}
@@ -5283,7 +5283,7 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$hiddenAppUpdate = F4(
 		var mapUserCmd = function (cmd) {
 			return A2($elm$core$Platform$Cmd$map, $MacCASOutreach$graphicsvg$GraphicSVG$Graphics, cmd);
 		};
-		var _v1 = userView(userModel).aD;
+		var _v1 = userView(userModel).aE;
 		var cw = _v1.a;
 		var ch = _v1.b;
 		switch (msg.$) {
@@ -5297,7 +5297,7 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$hiddenAppUpdate = F4(
 						newModel,
 						_Utils_update(
 							gModel,
-							{x: ch, y: cw})),
+							{z: ch, A: cw})),
 					mapUserCmd(userCmds));
 			case 1:
 				var mWH = msg.a;
@@ -5310,7 +5310,7 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$hiddenAppUpdate = F4(
 							userModel,
 							_Utils_update(
 								gModel,
-								{K: h, L: w})),
+								{M: h, N: w})),
 						$elm$core$Platform$Cmd$none);
 				} else {
 					return _Utils_Tuple2(
@@ -5433,7 +5433,7 @@ var $avh4$elm_color$Color$RgbaSpace = F4(
 		return {$: 0, a: a, b: b, c: c, d: d};
 	});
 var $avh4$elm_color$Color$fromRgba = function (components) {
-	return A4($avh4$elm_color$Color$RgbaSpace, components.T, components.P, components.O, components.w);
+	return A4($avh4$elm_color$Color$RgbaSpace, components.V, components.R, components.Q, components.y);
 };
 var $elm$core$Basics$clamp = F3(
 	function (low, high, number) {
@@ -5450,10 +5450,10 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$rgba = F4(
 		return $MacCASOutreach$graphicsvg$GraphicSVG$Secret$Solid(
 			$avh4$elm_color$Color$fromRgba(
 				{
-					w: $MacCASOutreach$graphicsvg$GraphicSVG$ssa(a),
-					O: $MacCASOutreach$graphicsvg$GraphicSVG$ssc(b),
-					P: $MacCASOutreach$graphicsvg$GraphicSVG$ssc(g),
-					T: $MacCASOutreach$graphicsvg$GraphicSVG$ssc(r)
+					y: $MacCASOutreach$graphicsvg$GraphicSVG$ssa(a),
+					Q: $MacCASOutreach$graphicsvg$GraphicSVG$ssc(b),
+					R: $MacCASOutreach$graphicsvg$GraphicSVG$ssc(g),
+					V: $MacCASOutreach$graphicsvg$GraphicSVG$ssc(r)
 				}));
 	});
 var $MacCASOutreach$graphicsvg$GraphicSVG$black = A4($MacCASOutreach$graphicsvg$GraphicSVG$rgba, 0, 0, 0, 1);
@@ -5513,11 +5513,11 @@ var $avh4$elm_color$Color$toRgba = function (_v0) {
 	var g = _v0.b;
 	var b = _v0.c;
 	var a = _v0.d;
-	return {w: a, O: b, P: g, T: r};
+	return {y: a, Q: b, R: g, V: r};
 };
 var $MacCASOutreach$graphicsvg$GraphicSVG$mkRGB = function (colour) {
 	var col = $avh4$elm_color$Color$toRgba(colour);
-	return 'rgba(' + ($elm$core$String$fromFloat(col.T) + (',' + ($elm$core$String$fromFloat(col.P) + (',' + ($elm$core$String$fromFloat(col.O) + (',' + ($elm$core$String$fromFloat(col.w) + ')')))))));
+	return 'rgba(' + ($elm$core$String$fromFloat(col.V) + (',' + ($elm$core$String$fromFloat(col.R) + (',' + ($elm$core$String$fromFloat(col.Q) + (',' + ($elm$core$String$fromFloat(col.y) + ')')))))));
 };
 var $elm$svg$Svg$Attributes$offset = _VirtualDom_attribute('offset');
 var $elm$core$Basics$pi = _Basics_pi;
@@ -5738,7 +5738,7 @@ var $elm$svg$Svg$Attributes$fillOpacity = _VirtualDom_attribute('fill-opacity');
 var $elm$svg$Svg$Attributes$fontSize = _VirtualDom_attribute('font-size');
 var $elm$svg$Svg$foreignObject = $elm$svg$Svg$trustedNode('foreignObject');
 var $MacCASOutreach$graphicsvg$GraphicSVG$getAlpha = function (colour) {
-	return $avh4$elm_color$Color$toRgba(colour).w;
+	return $avh4$elm_color$Color$toRgba(colour).y;
 };
 var $MacCASOutreach$graphicsvg$GraphicSVG$ident = _Utils_Tuple2(
 	_Utils_Tuple3(1, 0, 0),
@@ -7356,20 +7356,20 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$hiddenAppView = F2(
 	function (userView, _v0) {
 		var userModel = _v0.a;
 		var userViewEval = userView(userModel);
-		var title = userViewEval.aT;
-		var _v1 = userViewEval.aD;
+		var title = userViewEval.aU;
+		var _v1 = userViewEval.aE;
 		var w = _v1.a;
 		var h = _v1.b;
 		var shapes = _v1.c;
 		return {
-			aD: _List_fromArray(
+			aE: _List_fromArray(
 				[
 					A3($MacCASOutreach$graphicsvg$GraphicSVG$createCollage, w, h, shapes)
 				]),
-			aT: title
+			aU: title
 		};
 	});
-var $MacCASOutreach$graphicsvg$GraphicSVG$initHiddenModel = {x: 0, y: 0, K: 0, L: 0};
+var $MacCASOutreach$graphicsvg$GraphicSVG$initHiddenModel = {z: 0, A: 0, M: 0, N: 0};
 var $MacCASOutreach$graphicsvg$GraphicSVG$initialCmd = function (userCmd) {
 	return $elm$core$Platform$Cmd$batch(
 		_List_fromArray(
@@ -7389,7 +7389,7 @@ var $elm$browser$Browser$Events$MySub = F3(
 	});
 var $elm$browser$Browser$Events$State = F2(
 	function (subs, pids) {
-		return {am: pids, aw: subs};
+		return {an: pids, ax: subs};
 	});
 var $elm$core$Dict$RBEmpty_elm_builtin = {$: -2};
 var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
@@ -7621,7 +7621,7 @@ var $elm$core$Dict$merge = F6(
 	});
 var $elm$browser$Browser$Events$Event = F2(
 	function (key, event) {
-		return {ab: event, af: key};
+		return {ac: event, ag: key};
 	});
 var $elm$core$Platform$sendToSelf = _Platform_sendToSelf;
 var $elm$browser$Browser$Events$spawn = F3(
@@ -7696,7 +7696,7 @@ var $elm$browser$Browser$Events$onEffects = F3(
 			stepLeft,
 			stepBoth,
 			stepRight,
-			state.am,
+			state.an,
 			$elm$core$Dict$fromList(newSubs),
 			_Utils_Tuple3(_List_Nil, $elm$core$Dict$empty, _List_Nil));
 		var deadPids = _v0.a;
@@ -7742,8 +7742,8 @@ var $elm$core$List$filterMap = F2(
 	});
 var $elm$browser$Browser$Events$onSelfMsg = F3(
 	function (router, _v0, state) {
-		var key = _v0.af;
-		var event = _v0.ab;
+		var key = _v0.ag;
+		var event = _v0.ac;
 		var toMessage = function (_v2) {
 			var subKey = _v2.a;
 			var _v3 = _v2.b;
@@ -7752,7 +7752,7 @@ var $elm$browser$Browser$Events$onSelfMsg = F3(
 			var decoder = _v3.c;
 			return _Utils_eq(subKey, key) ? A2(_Browser_decodeEvent, decoder, event) : $elm$core$Maybe$Nothing;
 		};
-		var messages = A2($elm$core$List$filterMap, toMessage, state.aw);
+		var messages = A2($elm$core$List$filterMap, toMessage, state.ax);
 		return A2(
 			$elm$core$Task$andThen,
 			function (_v1) {
@@ -7820,11 +7820,11 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$subs = F2(
 var $MacCASOutreach$graphicsvg$GraphicSVG$app = function (input) {
 	return $elm$browser$Browser$application(
 		{
-			aM: F3(
+			aN: F3(
 				function (flags, url, key) {
-					var userInitCmd = A3(input.aM, flags, url, key).b;
-					var userInit = A3(input.aM, flags, url, key).a;
-					var userView = input.aV(userInit).aD;
+					var userInitCmd = A3(input.aN, flags, url, key).b;
+					var userInit = A3(input.aN, flags, url, key).a;
+					var userView = input.aW(userInit).aE;
 					var _v0 = userView;
 					var initW = _v0.a;
 					var initH = _v0.b;
@@ -7833,15 +7833,15 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$app = function (input) {
 							userInit,
 							_Utils_update(
 								$MacCASOutreach$graphicsvg$GraphicSVG$initHiddenModel,
-								{x: initH, y: initW})),
+								{z: initH, A: initW})),
 						$MacCASOutreach$graphicsvg$GraphicSVG$initialCmd(
 							A2($elm$core$Platform$Cmd$map, $MacCASOutreach$graphicsvg$GraphicSVG$Graphics, userInitCmd)));
 				}),
-			aO: A2($elm$core$Basics$composeL, $MacCASOutreach$graphicsvg$GraphicSVG$Graphics, input.aO),
 			aP: A2($elm$core$Basics$composeL, $MacCASOutreach$graphicsvg$GraphicSVG$Graphics, input.aP),
-			aS: $MacCASOutreach$graphicsvg$GraphicSVG$subs(input.aS),
-			aU: A2($MacCASOutreach$graphicsvg$GraphicSVG$hiddenAppUpdate, input.aV, input.aU),
-			aV: $MacCASOutreach$graphicsvg$GraphicSVG$hiddenAppView(input.aV)
+			aQ: A2($elm$core$Basics$composeL, $MacCASOutreach$graphicsvg$GraphicSVG$Graphics, input.aQ),
+			aT: $MacCASOutreach$graphicsvg$GraphicSVG$subs(input.aT),
+			aV: A2($MacCASOutreach$graphicsvg$GraphicSVG$hiddenAppUpdate, input.aW, input.aV),
+			aW: $MacCASOutreach$graphicsvg$GraphicSVG$hiddenAppView(input.aW)
 		});
 };
 var $MacCASOutreach$graphicsvg$GraphicSVG$App$DownArrow = {$: 11};
@@ -8272,7 +8272,7 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$App$hiddenTickUpdate = F3(
 	function (userUpdate, msg, _v0) {
 		var userModel = _v0.a;
 		var hiddenModel = _v0.b;
-		var updateTick = hiddenModel.C;
+		var updateTick = hiddenModel.E;
 		switch (msg.$) {
 			case 0:
 				var userMsg = msg.a;
@@ -8289,12 +8289,12 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$App$hiddenTickUpdate = F3(
 						userModel,
 						_Utils_update(
 							hiddenModel,
-							{A: t})),
+							{C: t})),
 					$elm$core$Platform$Cmd$none);
 			case 2:
 				var t = msg.a;
-				var timeInSeconds = A2($MacCASOutreach$graphicsvg$GraphicSVG$App$subtractTimeSeconds, t, hiddenModel.A);
-				var keyChecker = $MacCASOutreach$graphicsvg$GraphicSVG$App$keyCheckerFunction(hiddenModel.e);
+				var timeInSeconds = A2($MacCASOutreach$graphicsvg$GraphicSVG$App$subtractTimeSeconds, t, hiddenModel.C);
+				var keyChecker = $MacCASOutreach$graphicsvg$GraphicSVG$App$keyCheckerFunction(hiddenModel.f);
 				var wasd = A5(
 					$MacCASOutreach$graphicsvg$GraphicSVG$App$arrowChecker,
 					keyChecker,
@@ -8306,7 +8306,7 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$App$hiddenTickUpdate = F3(
 				var _v3 = A2(
 					userUpdate,
 					A2(
-						hiddenModel.C,
+						hiddenModel.E,
 						timeInSeconds,
 						_Utils_Tuple3(keyChecker, arrowKeys, wasd)),
 					userModel);
@@ -8318,7 +8318,7 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$App$hiddenTickUpdate = F3(
 						_Utils_update(
 							hiddenModel,
 							{
-								e: $MacCASOutreach$graphicsvg$GraphicSVG$App$maintainKeyDict(hiddenModel.e)
+								f: $MacCASOutreach$graphicsvg$GraphicSVG$App$maintainKeyDict(hiddenModel.f)
 							})),
 					A2($elm$core$Platform$Cmd$map, $MacCASOutreach$graphicsvg$GraphicSVG$App$UserMsg, newUserCmds));
 			case 3:
@@ -8329,7 +8329,7 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$App$hiddenTickUpdate = F3(
 						_Utils_update(
 							hiddenModel,
 							{
-								e: A3($MacCASOutreach$graphicsvg$GraphicSVG$App$insertKeyDict, hiddenModel.e, keyCode, 1)
+								f: A3($MacCASOutreach$graphicsvg$GraphicSVG$App$insertKeyDict, hiddenModel.f, keyCode, 1)
 							})),
 					$elm$core$Platform$Cmd$none);
 			case 4:
@@ -8340,7 +8340,7 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$App$hiddenTickUpdate = F3(
 						_Utils_update(
 							hiddenModel,
 							{
-								e: A3($MacCASOutreach$graphicsvg$GraphicSVG$App$insertKeyDict, hiddenModel.e, keyCode, 0)
+								f: A3($MacCASOutreach$graphicsvg$GraphicSVG$App$insertKeyDict, hiddenModel.f, keyCode, 0)
 							})),
 					$elm$core$Platform$Cmd$none);
 			default:
@@ -8354,10 +8354,10 @@ var $elm$time$Time$millisToPosix = $elm$core$Basics$identity;
 var $MacCASOutreach$graphicsvg$GraphicSVG$App$initHiddenModel = F2(
 	function (tick, navKey) {
 		return {
-			A: $elm$time$Time$millisToPosix(0),
-			e: $elm$core$Dict$empty,
-			aj: navKey,
-			C: tick
+			C: $elm$time$Time$millisToPosix(0),
+			f: $elm$core$Dict$empty,
+			ak: navKey,
+			E: tick
 		};
 	});
 var $MacCASOutreach$graphicsvg$GraphicSVG$Collage = F3(
@@ -8615,7 +8615,7 @@ var $elm$browser$Browser$AnimationManager$Time = function (a) {
 };
 var $elm$browser$Browser$AnimationManager$State = F3(
 	function (subs, request, oldTime) {
-		return {R: oldTime, at: request, aw: subs};
+		return {T: oldTime, au: request, ax: subs};
 	});
 var $elm$browser$Browser$AnimationManager$init = $elm$core$Task$succeed(
 	A3($elm$browser$Browser$AnimationManager$State, _List_Nil, $elm$core$Maybe$Nothing, 0));
@@ -8624,8 +8624,8 @@ var $elm$browser$Browser$AnimationManager$rAF = _Browser_rAF(0);
 var $elm$core$Process$spawn = _Scheduler_spawn;
 var $elm$browser$Browser$AnimationManager$onEffects = F3(
 	function (router, subs, _v0) {
-		var request = _v0.at;
-		var oldTime = _v0.R;
+		var request = _v0.au;
+		var oldTime = _v0.T;
 		var _v1 = _Utils_Tuple2(request, subs);
 		if (_v1.a.$ === 1) {
 			if (!_v1.b.b) {
@@ -8671,8 +8671,8 @@ var $elm$browser$Browser$AnimationManager$onEffects = F3(
 	});
 var $elm$browser$Browser$AnimationManager$onSelfMsg = F3(
 	function (router, newTime, _v0) {
-		var subs = _v0.aw;
-		var oldTime = _v0.R;
+		var subs = _v0.ax;
+		var oldTime = _v0.T;
 		var send = function (sub) {
 			if (!sub.$) {
 				var tagger = sub.a;
@@ -8752,15 +8752,15 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$App$subs = _List_fromArray(
 	]);
 var $MacCASOutreach$graphicsvg$GraphicSVG$App$appWithTick = F2(
 	function (tickMsg, userApp) {
-		var userView = userApp.aV;
-		var userUrlReq = userApp.aP;
-		var userUrlChange = userApp.aO;
-		var userUpdate = userApp.aU;
-		var userSubs = userApp.aS;
-		var userInit = userApp.aM;
+		var userView = userApp.aW;
+		var userUrlReq = userApp.aQ;
+		var userUrlChange = userApp.aP;
+		var userUpdate = userApp.aV;
+		var userSubs = userApp.aT;
+		var userInit = userApp.aN;
 		return $MacCASOutreach$graphicsvg$GraphicSVG$app(
 			{
-				aM: F3(
+				aN: F3(
 					function (flags, url, navKey) {
 						var userInitModel = A3(userInit, flags, url, navKey).a;
 						var userInitCmds = A3(userInit, flags, url, navKey).b;
@@ -8775,9 +8775,9 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$App$appWithTick = F2(
 										A2($elm$core$Platform$Cmd$map, $MacCASOutreach$graphicsvg$GraphicSVG$App$UserMsg, userInitCmds)
 									])));
 					}),
-				aO: A2($elm$core$Basics$composeL, $MacCASOutreach$graphicsvg$GraphicSVG$App$UserMsg, userUrlChange),
-				aP: A2($elm$core$Basics$composeL, $MacCASOutreach$graphicsvg$GraphicSVG$App$UserMsg, userUrlReq),
-				aS: function (_v0) {
+				aP: A2($elm$core$Basics$composeL, $MacCASOutreach$graphicsvg$GraphicSVG$App$UserMsg, userUrlChange),
+				aQ: A2($elm$core$Basics$composeL, $MacCASOutreach$graphicsvg$GraphicSVG$App$UserMsg, userUrlReq),
+				aT: function (_v0) {
 					var userModel = _v0.a;
 					return $elm$core$Platform$Sub$batch(
 						A2(
@@ -8788,13 +8788,13 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$App$appWithTick = F2(
 								userSubs(userModel)),
 							$MacCASOutreach$graphicsvg$GraphicSVG$App$subs));
 				},
-				aU: $MacCASOutreach$graphicsvg$GraphicSVG$App$hiddenTickUpdate(userUpdate),
-				aV: function (_v1) {
+				aV: $MacCASOutreach$graphicsvg$GraphicSVG$App$hiddenTickUpdate(userUpdate),
+				aW: function (_v1) {
 					var userModel = _v1.a;
 					var userViewE = userView(userModel);
 					return {
-						aD: A2($MacCASOutreach$graphicsvg$GraphicSVG$mapCollage, $MacCASOutreach$graphicsvg$GraphicSVG$App$UserMsg, userViewE.aD),
-						aT: userViewE.aT
+						aE: A2($MacCASOutreach$graphicsvg$GraphicSVG$mapCollage, $MacCASOutreach$graphicsvg$GraphicSVG$App$UserMsg, userViewE.aE),
+						aU: userViewE.aU
 					};
 				}
 			});
@@ -8805,7 +8805,7 @@ var $author$project$Main$sendSpeech = _Platform_outgoingPort('sendSpeech', $elm$
 var $author$project$Main$init = F3(
 	function (_v0, _v1, _v2) {
 		return _Utils_Tuple2(
-			{a: 0, X: 0},
+			{a: 0, n: 0, b: 0},
 			$author$project$Main$sendSpeech('You are at TrainStation. You may proceed to either ButtercupWay or DaffodilWay.'));
 	});
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
@@ -8818,6 +8818,7 @@ var $author$project$Main$DaffodilWay = 2;
 var $author$project$Main$FireweedWay = 4;
 var $author$project$Main$LillyPond = 6;
 var $author$project$Main$MountainPass = 3;
+var $elm$core$Basics$ge = _Utils_ge;
 var $author$project$Main$formatListWithOr = function (list) {
 	var _v0 = $elm$core$List$reverse(list);
 	if (!_v0.b) {
@@ -8936,186 +8937,241 @@ var $author$project$Main$update = F2(
 		switch (msg.$) {
 			case 0:
 				var t = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{X: t}),
-					$elm$core$Platform$Cmd$none);
-			case 1:
-				var _v1 = model.a;
-				if (!_v1) {
+				if (model.b >= 10) {
+					var _v1 = model.a;
+					switch (_v1) {
+						case 0:
+							return _Utils_Tuple2(
+								_Utils_update(
+									model,
+									{n: t, b: 0}),
+								$author$project$Main$sendSpeech(
+									$author$project$Main$stateToSpeechStr(0)));
+						case 1:
+							return _Utils_Tuple2(
+								_Utils_update(
+									model,
+									{n: t, b: 0}),
+								$author$project$Main$sendSpeech(
+									$author$project$Main$stateToSpeechStr(1)));
+						case 2:
+							return _Utils_Tuple2(
+								_Utils_update(
+									model,
+									{n: t, b: 0}),
+								$author$project$Main$sendSpeech(
+									$author$project$Main$stateToSpeechStr(2)));
+						case 3:
+							return _Utils_Tuple2(
+								_Utils_update(
+									model,
+									{n: t, b: 0}),
+								$author$project$Main$sendSpeech(
+									$author$project$Main$stateToSpeechStr(3)));
+						case 4:
+							return _Utils_Tuple2(
+								_Utils_update(
+									model,
+									{n: t, b: 0}),
+								$author$project$Main$sendSpeech(
+									$author$project$Main$stateToSpeechStr(4)));
+						case 5:
+							return _Utils_Tuple2(
+								_Utils_update(
+									model,
+									{n: t, b: 0}),
+								$author$project$Main$sendSpeech(
+									$author$project$Main$stateToSpeechStr(5)));
+						default:
+							return _Utils_Tuple2(
+								_Utils_update(
+									model,
+									{n: t, b: 0}),
+								$author$project$Main$sendSpeech(
+									$author$project$Main$stateToSpeechStr(6)));
+					}
+				} else {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{a: 1}),
+							{n: t, b: model.b + 0.01}),
+						$elm$core$Platform$Cmd$none);
+				}
+			case 1:
+				var _v2 = model.a;
+				if (!_v2) {
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{a: 1, b: 0}),
 						$author$project$Main$sendSpeech(
 							$author$project$Main$stateToSpeechStr(1)));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 2:
-				var _v2 = model.a;
-				if (_v2 === 1) {
+				var _v3 = model.a;
+				if (_v3 === 1) {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{a: 0}),
+							{a: 0, b: 0}),
 						$author$project$Main$sendSpeech(
 							$author$project$Main$stateToSpeechStr(0)));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 3:
-				var _v3 = model.a;
-				if (!_v3) {
+				var _v4 = model.a;
+				if (!_v4) {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{a: 2}),
+							{a: 2, b: 0}),
 						$author$project$Main$sendSpeech(
 							$author$project$Main$stateToSpeechStr(2)));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 4:
-				var _v4 = model.a;
-				if (_v4 === 2) {
+				var _v5 = model.a;
+				if (_v5 === 2) {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{a: 0}),
+							{a: 0, b: 0}),
 						$author$project$Main$sendSpeech(
 							$author$project$Main$stateToSpeechStr(0)));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 5:
-				var _v5 = model.a;
-				if (_v5 === 2) {
+				var _v6 = model.a;
+				if (_v6 === 2) {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{a: 1}),
+							{a: 1, b: 0}),
 						$author$project$Main$sendSpeech(
 							$author$project$Main$stateToSpeechStr(1)));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 6:
-				var _v6 = model.a;
-				if (_v6 === 1) {
+				var _v7 = model.a;
+				if (_v7 === 1) {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{a: 2}),
+							{a: 2, b: 0}),
 						$author$project$Main$sendSpeech(
 							$author$project$Main$stateToSpeechStr(2)));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 7:
-				var _v7 = model.a;
-				if (_v7 === 1) {
+				var _v8 = model.a;
+				if (_v8 === 1) {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{a: 3}),
+							{a: 3, b: 0}),
 						$author$project$Main$sendSpeech(
 							$author$project$Main$stateToSpeechStr(3)));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 8:
-				var _v8 = model.a;
-				if (_v8 === 3) {
+				var _v9 = model.a;
+				if (_v9 === 3) {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{a: 2}),
+							{a: 2, b: 0}),
 						$author$project$Main$sendSpeech(
 							$author$project$Main$stateToSpeechStr(2)));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 9:
-				var _v9 = model.a;
-				if (_v9 === 3) {
+				var _v10 = model.a;
+				if (_v10 === 3) {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{a: 4}),
+							{a: 4, b: 0}),
 						$author$project$Main$sendSpeech(
 							$author$project$Main$stateToSpeechStr(4)));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 10:
-				var _v10 = model.a;
-				if (_v10 === 4) {
+				var _v11 = model.a;
+				if (_v11 === 4) {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{a: 3}),
+							{a: 3, b: 0}),
 						$author$project$Main$sendSpeech(
 							$author$project$Main$stateToSpeechStr(3)));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 11:
-				var _v11 = model.a;
-				if (_v11 === 4) {
+				var _v12 = model.a;
+				if (_v12 === 4) {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{a: 5}),
+							{a: 5, b: 0}),
 						$author$project$Main$sendSpeech(
 							$author$project$Main$stateToSpeechStr(5)));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 12:
-				var _v12 = model.a;
-				if (_v12 === 5) {
+				var _v13 = model.a;
+				if (_v13 === 5) {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{a: 4}),
+							{a: 4, b: 0}),
 						$author$project$Main$sendSpeech(
 							$author$project$Main$stateToSpeechStr(4)));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 13:
-				var _v13 = model.a;
-				if (_v13 === 3) {
+				var _v14 = model.a;
+				if (_v14 === 3) {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{a: 5}),
+							{a: 5, b: 0}),
 						$author$project$Main$sendSpeech(
 							$author$project$Main$stateToSpeechStr(5)));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 14:
-				var _v14 = model.a;
-				if (_v14 === 6) {
+				var _v15 = model.a;
+				if (_v15 === 6) {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{a: 5}),
+							{a: 5, b: 0}),
 						$author$project$Main$sendSpeech(
 							$author$project$Main$stateToSpeechStr(5)));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 15:
-				var _v15 = model.a;
-				if (_v15 === 5) {
+				var _v16 = model.a;
+				if (_v16 === 5) {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{a: 6}),
+							{a: 6, b: 0}),
 						$author$project$Main$sendSpeech(
 							$author$project$Main$stateToSpeechStr(6)));
 				} else {
@@ -9662,28 +9718,28 @@ var $author$project$Main$myShapes = function (model) {
 };
 var $author$project$Main$view = function (model) {
 	return {
-		aD: A3(
+		aE: A3(
 			$MacCASOutreach$graphicsvg$GraphicSVG$collage,
 			500,
 			500,
 			$author$project$Main$myShapes(model)),
-		aT: 'My App'
+		aU: 'My App'
 	};
 };
 var $author$project$Main$main = A2(
 	$MacCASOutreach$graphicsvg$GraphicSVG$App$appWithTick,
 	$author$project$Main$Tick,
 	{
-		aM: $author$project$Main$init,
-		aO: function (_v0) {
+		aN: $author$project$Main$init,
+		aP: function (_v0) {
 			return $author$project$Main$NoOp;
 		},
-		aP: function (_v1) {
+		aQ: function (_v1) {
 			return $author$project$Main$NoOp;
 		},
-		aS: $author$project$Main$subscriptions,
-		aU: $author$project$Main$update,
-		aV: $author$project$Main$view
+		aT: $author$project$Main$subscriptions,
+		aV: $author$project$Main$update,
+		aW: $author$project$Main$view
 	});
 _Platform_export({'Main':{'init':$author$project$Main$main(
 	$elm$json$Json$Decode$succeed(0))(0)}});}(this));

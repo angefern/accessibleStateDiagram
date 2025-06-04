@@ -345,13 +345,23 @@ subscriptions _ =
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
     case msg of
-        Tick t _ ->
-            ( { model | time = t }, Cmd.none )
+        Tick t _ -> if model.timeSinceLastSpoken >= 15
+                    then (
+                        case model.state of
+                            TrainStation -> ( { model | time = t, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr TrainStation) )
+                            ButtercupWay -> ( { model | time = t, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr ButtercupWay) )
+                            DaffodilWay -> ( { model | time = t, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr DaffodilWay) )
+                            MountainPass -> ( { model | time = t, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr MountainPass) )
+                            FireweedWay -> ( { model | time = t, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr FireweedWay) )
+                            BullrushWay -> ( { model | time = t, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr BullrushWay) )
+                            LillyPond -> ( { model | time = t, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr LillyPond) )
+                    )
+                    else    ( { model | time = t, timeSinceLastSpoken = model.timeSinceLastSpoken + 0.01 }, Cmd.none )
 
         TS2BCW ->
             case model.state of
                 TrainStation ->
-                    ( { model | state = ButtercupWay }, sendSpeech (stateToSpeechStr ButtercupWay) )
+                    ( { model | state = ButtercupWay, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr ButtercupWay) )
 
                 _ ->
                     ( model, Cmd.none )
@@ -359,7 +369,7 @@ update msg model =
         BCW2TS ->
             case model.state of
                 ButtercupWay ->
-                    ( { model | state = TrainStation }, sendSpeech (stateToSpeechStr TrainStation) )
+                    ( { model | state = TrainStation, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr TrainStation) )
 
                 _ ->
                     ( model, Cmd.none )
@@ -367,7 +377,7 @@ update msg model =
         TS2DW ->
             case model.state of
                 TrainStation ->
-                    ( { model | state = DaffodilWay }, sendSpeech (stateToSpeechStr DaffodilWay) )
+                    ( { model | state = DaffodilWay, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr DaffodilWay) )
 
                 _ ->
                     ( model, Cmd.none )
@@ -375,7 +385,7 @@ update msg model =
         DW2TS ->
             case model.state of
                 DaffodilWay ->
-                    ( { model | state = TrainStation }, sendSpeech (stateToSpeechStr TrainStation) )
+                    ( { model | state = TrainStation, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr TrainStation) )
 
                 _ ->
                     ( model, Cmd.none )
@@ -383,7 +393,7 @@ update msg model =
         DW2BCW ->
             case model.state of
                 DaffodilWay ->
-                    ( { model | state = ButtercupWay }, sendSpeech (stateToSpeechStr ButtercupWay) )
+                    ( { model | state = ButtercupWay, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr ButtercupWay) )
 
                 _ ->
                     ( model, Cmd.none )
@@ -391,7 +401,7 @@ update msg model =
         BCW2DW ->
             case model.state of
                 ButtercupWay ->
-                    ( { model | state = DaffodilWay }, sendSpeech (stateToSpeechStr DaffodilWay) )
+                    ( { model | state = DaffodilWay, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr DaffodilWay) )
 
                 _ ->
                     ( model, Cmd.none )
@@ -399,7 +409,7 @@ update msg model =
         BCW2MP ->
             case model.state of
                 ButtercupWay ->
-                    ( { model | state = MountainPass }, sendSpeech (stateToSpeechStr MountainPass) )
+                    ( { model | state = MountainPass, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr MountainPass) )
 
                 _ ->
                     ( model, Cmd.none )
@@ -407,7 +417,7 @@ update msg model =
         MP2DW ->
             case model.state of
                 MountainPass ->
-                    ( { model | state = DaffodilWay }, sendSpeech (stateToSpeechStr DaffodilWay) )
+                    ( { model | state = DaffodilWay, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr DaffodilWay) )
 
                 _ ->
                     ( model, Cmd.none )
@@ -415,7 +425,7 @@ update msg model =
         MP2FW ->
             case model.state of
                 MountainPass ->
-                    ( { model | state = FireweedWay }, sendSpeech (stateToSpeechStr FireweedWay) )
+                    ( { model | state = FireweedWay, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr FireweedWay) )
 
                 _ ->
                     ( model, Cmd.none )
@@ -423,7 +433,7 @@ update msg model =
         FW2MP ->
             case model.state of
                 FireweedWay ->
-                    ( { model | state = MountainPass }, sendSpeech (stateToSpeechStr MountainPass) )
+                    ( { model | state = MountainPass, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr MountainPass) )
 
                 _ ->
                     ( model, Cmd.none )
@@ -431,7 +441,7 @@ update msg model =
         FW2BW ->
             case model.state of
                 FireweedWay ->
-                    ( { model | state = BullrushWay }, sendSpeech (stateToSpeechStr BullrushWay) )
+                    ( { model | state = BullrushWay, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr BullrushWay) )
 
                 _ ->
                     ( model, Cmd.none )
@@ -439,7 +449,7 @@ update msg model =
         BW2FW ->
             case model.state of
                 BullrushWay ->
-                    ( { model | state = FireweedWay }, sendSpeech (stateToSpeechStr FireweedWay) )
+                    ( { model | state = FireweedWay, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr FireweedWay) )
 
                 _ ->
                     ( model, Cmd.none )
@@ -447,7 +457,7 @@ update msg model =
         MP2BW ->
             case model.state of
                 MountainPass ->
-                    ( { model | state = BullrushWay }, sendSpeech (stateToSpeechStr BullrushWay) )
+                    ( { model | state = BullrushWay, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr BullrushWay) )
 
                 _ ->
                     ( model, Cmd.none )
@@ -455,7 +465,7 @@ update msg model =
         LP2BW ->
             case model.state of
                 LillyPond ->
-                    ( { model | state = BullrushWay }, sendSpeech (stateToSpeechStr BullrushWay) )
+                    ( { model | state = BullrushWay, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr BullrushWay) )
 
                 _ ->
                     ( model, Cmd.none )
@@ -463,7 +473,7 @@ update msg model =
         BW2LP ->
             case model.state of
                 BullrushWay ->
-                    ( { model | state = LillyPond }, sendSpeech (stateToSpeechStr LillyPond) )
+                    ( { model | state = LillyPond, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr LillyPond) )
 
                 _ ->
                     ( model, Cmd.none )
@@ -475,12 +485,13 @@ update msg model =
 type alias Model =
     { time : Float
     , state : State
+    , timeSinceLastSpoken : Float
     }
 
 type alias Point = (Float, Float)
 
 init : () -> Url.Url -> Browser.Navigation.Key -> ( Model, Cmd Msg ) --?
-init _ _ _ = ({ time = 0, state = TrainStation }, sendSpeech "You are at TrainStation. You may proceed to either ButtercupWay or DaffodilWay.")
+init _ _ _ = ({ time = 0, state = TrainStation, timeSinceLastSpoken = 0 }, sendSpeech "You are at TrainStation. You may proceed to either ButtercupWay or DaffodilWay.")
 
 
 view : Model -> { title : String, body : Collage Msg }
