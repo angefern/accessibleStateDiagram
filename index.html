@@ -36,11 +36,14 @@
       if (voices.length > 0) {
         const utterThis = new SpeechSynthesisUtterance(message);
         utterThis.voice = voices[0];
-        console.log(utterThis.voice);
         utterThis.pitch = 1;
         utterThis.rate = 0.8;
+
+        if (synth.speaking)
+          synth.cancel();
+
         synth.speak(utterThis);
-        console.log("message received" + message);
+        console.log("Message received: " + message);
       }
       else {
         console.log("Voices not loaded yet, retrying in 100ms...");
