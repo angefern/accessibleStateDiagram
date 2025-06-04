@@ -26,6 +26,16 @@ port sendSpeech : String -> Cmd msg
 
 myShapes : Model -> List (Shape Msg)
 myShapes model =
+    let
+        currentFocus =
+            case model.nextStatesZip of
+                SZip _ f _ -> f
+
+        highlightIfFocused : State -> State -> Shape Msg
+        highlightIfFocused focusedState thisState =
+            roundedRect 40 20 5
+                |> filled (if focusedState == thisState then pink else green)
+    in
     case model.state of
         TrainStation  ->
             [ text "TrainStation"
@@ -33,8 +43,7 @@ myShapes model =
                   |> filled black
             , group
                   [
-                       roundedRect 40 20 5
-                            |> filled green
+                       highlightIfFocused currentFocus ButtercupWay
                   ,    text "TS2BCW"
                             |> centered
                             |> size 8
@@ -45,8 +54,7 @@ myShapes model =
                      |> notifyTap TS2BCW
             , group
                   [
-                       roundedRect 40 20 5
-                            |> filled green
+                       highlightIfFocused currentFocus DaffodilWay                      
                   ,    text "TS2DW"
                             |> centered
                             |> size 8
@@ -62,8 +70,7 @@ myShapes model =
                   |> filled black
             , group
                   [
-                       roundedRect 40 20 5
-                            |> filled green
+                       highlightIfFocused currentFocus TrainStation                      
                   ,    text "BCW2TS"
                             |> centered
                             |> size 8
@@ -74,8 +81,7 @@ myShapes model =
                      |> notifyTap BCW2TS
             , group
                   [
-                       roundedRect 40 20 5
-                            |> filled green
+                       highlightIfFocused currentFocus DaffodilWay
                   ,    text "BCW2DW"
                             |> centered
                             |> size 8
@@ -86,8 +92,7 @@ myShapes model =
                      |> notifyTap BCW2DW
             , group
                   [
-                       roundedRect 40 20 5
-                            |> filled green
+                       highlightIfFocused currentFocus MountainPass
                   ,    text "BCW2MP"
                             |> centered
                             |> size 8
@@ -103,8 +108,7 @@ myShapes model =
                   |> filled black
             , group
                   [
-                       roundedRect 40 20 5
-                            |> filled green
+                       highlightIfFocused currentFocus TrainStation
                   ,    text "DW2TS"
                             |> centered
                             |> size 8
@@ -115,8 +119,7 @@ myShapes model =
                      |> notifyTap DW2TS
             , group
                   [
-                       roundedRect 40 20 5
-                            |> filled green
+                       highlightIfFocused currentFocus ButtercupWay
                   ,    text "DW2BCW"
                             |> centered
                             |> size 8
@@ -132,8 +135,7 @@ myShapes model =
                   |> filled black
             , group
                   [
-                       roundedRect 40 20 5
-                            |> filled green
+                       highlightIfFocused currentFocus DaffodilWay
                   ,    text "MP2DW"
                             |> centered
                             |> size 8
@@ -144,8 +146,7 @@ myShapes model =
                      |> notifyTap MP2DW
             , group
                   [
-                       roundedRect 40 20 5
-                            |> filled green
+                       highlightIfFocused currentFocus FireweedWay
                   ,    text "MP2FW"
                             |> centered
                             |> size 8
@@ -156,8 +157,7 @@ myShapes model =
                      |> notifyTap MP2FW
             , group
                   [
-                       roundedRect 40 20 5
-                            |> filled green
+                       highlightIfFocused currentFocus BullrushWay
                   ,    text "MP2BW"
                             |> centered
                             |> size 8
@@ -173,8 +173,7 @@ myShapes model =
                   |> filled black
             , group
                   [
-                       roundedRect 40 20 5
-                            |> filled green
+                       highlightIfFocused currentFocus MountainPass
                   ,    text "FW2MP"
                             |> centered
                             |> size 8
@@ -185,8 +184,7 @@ myShapes model =
                      |> notifyTap FW2MP
             , group
                   [
-                       roundedRect 40 20 5
-                            |> filled green
+                       highlightIfFocused currentFocus BullrushWay
                   ,    text "FW2BW"
                             |> centered
                             |> size 8
@@ -202,8 +200,7 @@ myShapes model =
                   |> filled black
             , group
                   [
-                       roundedRect 40 20 5
-                            |> filled green
+                       highlightIfFocused currentFocus FireweedWay
                   ,    text "BW2FW"
                             |> centered
                             |> size 8
@@ -214,8 +211,7 @@ myShapes model =
                      |> notifyTap BW2FW
             , group
                   [
-                       roundedRect 40 20 5
-                            |> filled green
+                       highlightIfFocused currentFocus LillyPond
                   ,    text "BW2LP"
                             |> centered
                             |> size 8
@@ -231,8 +227,7 @@ myShapes model =
                   |> filled black
             , group
                   [
-                       roundedRect 40 20 5
-                            |> filled green
+                       highlightIfFocused currentFocus BullrushWay
                   ,    text "LP2BW"
                             |> centered
                             |> size 8
@@ -269,6 +264,18 @@ type State = TrainStation
            | BullrushWay
            | LillyPond
 
+type StateZipper = SZip (List State) State (List State) -- before, focused, after
+
+sPrev : StateZipper -> StateZipper
+sPrev (SZip before focused after) = case before of
+                                      [] -> SZip before focused after
+                                      a::rest -> SZip rest a (focused::after)
+
+sNext : StateZipper -> StateZipper
+sNext  (SZip before focused after) = case after of
+                                         [] -> SZip before focused after
+                                         a::rest -> SZip (focused::before) a rest
+
 
 stateToStr : State -> String
 stateToStr state =
@@ -304,9 +311,22 @@ abbrToStateStr abbr =
         "LP"  -> "LillyPond"
         _ -> ""
 
+strToState : String -> Maybe State
+strToState str =
+    case str of
+        "TrainStation" -> Just TrainStation
+        "ButtercupWay" -> Just ButtercupWay
+        "DaffodilWay" -> Just DaffodilWay
+        "MountainPass" -> Just MountainPass
+        "FireweedWay" -> Just FireweedWay
+        "BullrushWay" -> Just BullrushWay
+        "LillyPond" -> Just LillyPond
+        _ -> Nothing
 
-nextStates : State -> List String
-nextStates state = 
+
+
+nextStatesStr : State -> List String
+nextStatesStr state = 
     let
         abbr = stateToAbbr state
         msgs = [ "TS2BCW", "BCW2TS", "TS2DW"
@@ -318,6 +338,9 @@ nextStates state =
     in List.filter (startsWith abbr) msgs
         |> List.map (String.replace (abbr ++ "2") "")
         |> List.map abbrToStateStr
+
+nextStates : List String -> List State
+nextStates states = List.map (\s -> Maybe.withDefault TrainStation (strToState s)) states 
 
 formatListWithOr : List String -> String
 formatListWithOr list =
@@ -334,7 +357,7 @@ stateToSpeechStr : State -> String
 stateToSpeechStr state =
     let
         current = stateToStr state
-        nextStr = formatListWithOr (nextStates state)
+        nextStr = formatListWithOr (nextStatesStr state)
     in
         "You are at " ++ current ++ ". You may proceed to " ++ nextStr ++ "."
 
@@ -345,8 +368,28 @@ subscriptions _ =
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
     case msg of
-        Tick t _ ->
-            ( { model | time = t }, Cmd.none )
+        Tick t (keys, _, _) ->
+            if keys RightArrow == JustDown then 
+                ({ model | time = t
+                    , nextStatesZip = sNext model.nextStatesZip
+                    }, Cmd.none)
+            else if keys LeftArrow == JustDown then 
+                ({ model | time = t
+                    , nextStatesZip = sPrev model.nextStatesZip
+                    }, Cmd.none)
+            else if keys Enter == JustDown then 
+                case model.nextStatesZip of 
+                    SZip _ focused _ -> 
+                        case nextStates (nextStatesStr focused) of
+                            a :: rest -> 
+                                ({ model | time = t
+                                    , state = focused
+                                    , nextStatesZip = SZip [] a rest
+                                    }, sendSpeech (stateToSpeechStr focused))
+                            [] -> ( { model | time = t }, Cmd.none )
+
+            else 
+                ( { model | time = t }, Cmd.none )                 
 
         TS2BCW ->
             case model.state of
@@ -475,12 +518,14 @@ update msg model =
 type alias Model =
     { time : Float
     , state : State
+    , nextStatesZip : StateZipper
     }
 
 type alias Point = (Float, Float)
 
 init : () -> Url.Url -> Browser.Navigation.Key -> ( Model, Cmd Msg ) --?
-init _ _ _ = ({ time = 0, state = TrainStation }, sendSpeech "You are at TrainStation. You may proceed to either ButtercupWay or DaffodilWay.")
+init _ _ _ = ({ time = 0, state = TrainStation, nextStatesZip = (SZip [] ButtercupWay [DaffodilWay]) }
+                , sendSpeech "You are at TrainStation. You may proceed to either ButtercupWay or DaffodilWay." )
 
 
 view : Model -> { title : String, body : Collage Msg }

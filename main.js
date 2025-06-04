@@ -8808,13 +8808,28 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$App$appWithTick = F2(
 				}
 			});
 	});
+var $author$project$Main$ButtercupWay = {$: 'ButtercupWay'};
+var $author$project$Main$DaffodilWay = {$: 'DaffodilWay'};
+var $author$project$Main$SZip = F3(
+	function (a, b, c) {
+		return {$: 'SZip', a: a, b: b, c: c};
+	});
 var $author$project$Main$TrainStation = {$: 'TrainStation'};
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $author$project$Main$sendSpeech = _Platform_outgoingPort('sendSpeech', $elm$json$Json$Encode$string);
 var $author$project$Main$init = F3(
 	function (_v0, _v1, _v2) {
 		return _Utils_Tuple2(
-			{state: $author$project$Main$TrainStation, time: 0},
+			{
+				nextStatesZip: A3(
+					$author$project$Main$SZip,
+					_List_Nil,
+					$author$project$Main$ButtercupWay,
+					_List_fromArray(
+						[$author$project$Main$DaffodilWay])),
+				state: $author$project$Main$TrainStation,
+				time: 0
+			},
 			$author$project$Main$sendSpeech('You are at TrainStation. You may proceed to either ButtercupWay or DaffodilWay.'));
 	});
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
@@ -8822,28 +8837,49 @@ var $author$project$Main$subscriptions = function (_v0) {
 	return $elm$core$Platform$Sub$none;
 };
 var $author$project$Main$BullrushWay = {$: 'BullrushWay'};
-var $author$project$Main$ButtercupWay = {$: 'ButtercupWay'};
-var $author$project$Main$DaffodilWay = {$: 'DaffodilWay'};
+var $MacCASOutreach$graphicsvg$GraphicSVG$App$Enter = {$: 'Enter'};
 var $author$project$Main$FireweedWay = {$: 'FireweedWay'};
 var $author$project$Main$LillyPond = {$: 'LillyPond'};
 var $author$project$Main$MountainPass = {$: 'MountainPass'};
-var $author$project$Main$formatListWithOr = function (list) {
-	var _v0 = $elm$core$List$reverse(list);
-	if (!_v0.b) {
-		return '';
-	} else {
-		if (!_v0.b.b) {
-			var last = _v0.a;
-			return last;
-		} else {
-			var last = _v0.a;
-			var rest = _v0.b;
-			return A2(
-				$elm$core$String$join,
-				', ',
-				$elm$core$List$reverse(rest)) + (', or ' + last);
-		}
+var $author$project$Main$strToState = function (str) {
+	switch (str) {
+		case 'TrainStation':
+			return $elm$core$Maybe$Just($author$project$Main$TrainStation);
+		case 'ButtercupWay':
+			return $elm$core$Maybe$Just($author$project$Main$ButtercupWay);
+		case 'DaffodilWay':
+			return $elm$core$Maybe$Just($author$project$Main$DaffodilWay);
+		case 'MountainPass':
+			return $elm$core$Maybe$Just($author$project$Main$MountainPass);
+		case 'FireweedWay':
+			return $elm$core$Maybe$Just($author$project$Main$FireweedWay);
+		case 'BullrushWay':
+			return $elm$core$Maybe$Just($author$project$Main$BullrushWay);
+		case 'LillyPond':
+			return $elm$core$Maybe$Just($author$project$Main$LillyPond);
+		default:
+			return $elm$core$Maybe$Nothing;
 	}
+};
+var $elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
+var $author$project$Main$nextStates = function (states) {
+	return A2(
+		$elm$core$List$map,
+		function (s) {
+			return A2(
+				$elm$core$Maybe$withDefault,
+				$author$project$Main$TrainStation,
+				$author$project$Main$strToState(s));
+		},
+		states);
 };
 var $author$project$Main$abbrToStateStr = function (abbr) {
 	switch (abbr) {
@@ -8901,7 +8937,7 @@ var $author$project$Main$stateToAbbr = function (state) {
 			return 'LP';
 	}
 };
-var $author$project$Main$nextStates = function (state) {
+var $author$project$Main$nextStatesStr = function (state) {
 	var msgs = _List_fromArray(
 		['TS2BCW', 'BCW2TS', 'TS2DW', 'DW2TS', 'DW2BCW', 'BCW2DW', 'BCW2MP', 'MP2DW', 'MP2FW', 'FW2MP', 'FW2BW', 'BW2FW', 'MP2BW', 'LP2BW', 'BW2LP']);
 	var abbr = $author$project$Main$stateToAbbr(state);
@@ -8915,6 +8951,56 @@ var $author$project$Main$nextStates = function (state) {
 				$elm$core$List$filter,
 				$elm$core$String$startsWith(abbr),
 				msgs)));
+};
+var $author$project$Main$sNext = function (_v0) {
+	var before = _v0.a;
+	var focused = _v0.b;
+	var after = _v0.c;
+	if (!after.b) {
+		return A3($author$project$Main$SZip, before, focused, after);
+	} else {
+		var a = after.a;
+		var rest = after.b;
+		return A3(
+			$author$project$Main$SZip,
+			A2($elm$core$List$cons, focused, before),
+			a,
+			rest);
+	}
+};
+var $author$project$Main$sPrev = function (_v0) {
+	var before = _v0.a;
+	var focused = _v0.b;
+	var after = _v0.c;
+	if (!before.b) {
+		return A3($author$project$Main$SZip, before, focused, after);
+	} else {
+		var a = before.a;
+		var rest = before.b;
+		return A3(
+			$author$project$Main$SZip,
+			rest,
+			a,
+			A2($elm$core$List$cons, focused, after));
+	}
+};
+var $author$project$Main$formatListWithOr = function (list) {
+	var _v0 = $elm$core$List$reverse(list);
+	if (!_v0.b) {
+		return '';
+	} else {
+		if (!_v0.b.b) {
+			var last = _v0.a;
+			return last;
+		} else {
+			var last = _v0.a;
+			var rest = _v0.b;
+			return A2(
+				$elm$core$String$join,
+				', ',
+				$elm$core$List$reverse(rest)) + (', or ' + last);
+		}
+	}
 };
 var $author$project$Main$stateToStr = function (state) {
 	switch (state.$) {
@@ -8936,7 +9022,7 @@ var $author$project$Main$stateToStr = function (state) {
 };
 var $author$project$Main$stateToSpeechStr = function (state) {
 	var nextStr = $author$project$Main$formatListWithOr(
-		$author$project$Main$nextStates(state));
+		$author$project$Main$nextStatesStr(state));
 	var current = $author$project$Main$stateToStr(state);
 	return 'You are at ' + (current + ('. You may proceed to ' + (nextStr + '.')));
 };
@@ -8945,14 +9031,71 @@ var $author$project$Main$update = F2(
 		switch (msg.$) {
 			case 'Tick':
 				var t = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{time: t}),
-					$elm$core$Platform$Cmd$none);
+				var _v1 = msg.b;
+				var keys = _v1.a;
+				if (_Utils_eq(
+					keys($MacCASOutreach$graphicsvg$GraphicSVG$App$RightArrow),
+					$MacCASOutreach$graphicsvg$GraphicSVG$App$JustDown)) {
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								nextStatesZip: $author$project$Main$sNext(model.nextStatesZip),
+								time: t
+							}),
+						$elm$core$Platform$Cmd$none);
+				} else {
+					if (_Utils_eq(
+						keys($MacCASOutreach$graphicsvg$GraphicSVG$App$LeftArrow),
+						$MacCASOutreach$graphicsvg$GraphicSVG$App$JustDown)) {
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{
+									nextStatesZip: $author$project$Main$sPrev(model.nextStatesZip),
+									time: t
+								}),
+							$elm$core$Platform$Cmd$none);
+					} else {
+						if (_Utils_eq(
+							keys($MacCASOutreach$graphicsvg$GraphicSVG$App$Enter),
+							$MacCASOutreach$graphicsvg$GraphicSVG$App$JustDown)) {
+							var _v2 = model.nextStatesZip;
+							var focused = _v2.b;
+							var _v3 = $author$project$Main$nextStates(
+								$author$project$Main$nextStatesStr(focused));
+							if (_v3.b) {
+								var a = _v3.a;
+								var rest = _v3.b;
+								return _Utils_Tuple2(
+									_Utils_update(
+										model,
+										{
+											nextStatesZip: A3($author$project$Main$SZip, _List_Nil, a, rest),
+											state: focused,
+											time: t
+										}),
+									$author$project$Main$sendSpeech(
+										$author$project$Main$stateToSpeechStr(focused)));
+							} else {
+								return _Utils_Tuple2(
+									_Utils_update(
+										model,
+										{time: t}),
+									$elm$core$Platform$Cmd$none);
+							}
+						} else {
+							return _Utils_Tuple2(
+								_Utils_update(
+									model,
+									{time: t}),
+								$elm$core$Platform$Cmd$none);
+						}
+					}
+				}
 			case 'TS2BCW':
-				var _v1 = model.state;
-				if (_v1.$ === 'TrainStation') {
+				var _v4 = model.state;
+				if (_v4.$ === 'TrainStation') {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
@@ -8963,8 +9106,8 @@ var $author$project$Main$update = F2(
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'BCW2TS':
-				var _v2 = model.state;
-				if (_v2.$ === 'ButtercupWay') {
+				var _v5 = model.state;
+				if (_v5.$ === 'ButtercupWay') {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
@@ -8975,8 +9118,8 @@ var $author$project$Main$update = F2(
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'TS2DW':
-				var _v3 = model.state;
-				if (_v3.$ === 'TrainStation') {
+				var _v6 = model.state;
+				if (_v6.$ === 'TrainStation') {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
@@ -8987,8 +9130,8 @@ var $author$project$Main$update = F2(
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'DW2TS':
-				var _v4 = model.state;
-				if (_v4.$ === 'DaffodilWay') {
+				var _v7 = model.state;
+				if (_v7.$ === 'DaffodilWay') {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
@@ -8999,8 +9142,8 @@ var $author$project$Main$update = F2(
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'DW2BCW':
-				var _v5 = model.state;
-				if (_v5.$ === 'DaffodilWay') {
+				var _v8 = model.state;
+				if (_v8.$ === 'DaffodilWay') {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
@@ -9011,8 +9154,8 @@ var $author$project$Main$update = F2(
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'BCW2DW':
-				var _v6 = model.state;
-				if (_v6.$ === 'ButtercupWay') {
+				var _v9 = model.state;
+				if (_v9.$ === 'ButtercupWay') {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
@@ -9023,8 +9166,8 @@ var $author$project$Main$update = F2(
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'BCW2MP':
-				var _v7 = model.state;
-				if (_v7.$ === 'ButtercupWay') {
+				var _v10 = model.state;
+				if (_v10.$ === 'ButtercupWay') {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
@@ -9035,8 +9178,8 @@ var $author$project$Main$update = F2(
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'MP2DW':
-				var _v8 = model.state;
-				if (_v8.$ === 'MountainPass') {
+				var _v11 = model.state;
+				if (_v11.$ === 'MountainPass') {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
@@ -9047,8 +9190,8 @@ var $author$project$Main$update = F2(
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'MP2FW':
-				var _v9 = model.state;
-				if (_v9.$ === 'MountainPass') {
+				var _v12 = model.state;
+				if (_v12.$ === 'MountainPass') {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
@@ -9059,8 +9202,8 @@ var $author$project$Main$update = F2(
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'FW2MP':
-				var _v10 = model.state;
-				if (_v10.$ === 'FireweedWay') {
+				var _v13 = model.state;
+				if (_v13.$ === 'FireweedWay') {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
@@ -9071,8 +9214,8 @@ var $author$project$Main$update = F2(
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'FW2BW':
-				var _v11 = model.state;
-				if (_v11.$ === 'FireweedWay') {
+				var _v14 = model.state;
+				if (_v14.$ === 'FireweedWay') {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
@@ -9083,8 +9226,8 @@ var $author$project$Main$update = F2(
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'BW2FW':
-				var _v12 = model.state;
-				if (_v12.$ === 'BullrushWay') {
+				var _v15 = model.state;
+				if (_v15.$ === 'BullrushWay') {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
@@ -9095,8 +9238,8 @@ var $author$project$Main$update = F2(
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'MP2BW':
-				var _v13 = model.state;
-				if (_v13.$ === 'MountainPass') {
+				var _v16 = model.state;
+				if (_v16.$ === 'MountainPass') {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
@@ -9107,8 +9250,8 @@ var $author$project$Main$update = F2(
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'LP2BW':
-				var _v14 = model.state;
-				if (_v14.$ === 'LillyPond') {
+				var _v17 = model.state;
+				if (_v17.$ === 'LillyPond') {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
@@ -9119,8 +9262,8 @@ var $author$project$Main$update = F2(
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'BW2LP':
-				var _v15 = model.state;
-				if (_v15.$ === 'BullrushWay') {
+				var _v18 = model.state;
+				if (_v18.$ === 'BullrushWay') {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
@@ -9188,6 +9331,7 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$notifyTap = F2(
 	function (msg, shape) {
 		return A2($MacCASOutreach$graphicsvg$GraphicSVG$Secret$Tap, msg, shape);
 	});
+var $MacCASOutreach$graphicsvg$GraphicSVG$pink = A4($MacCASOutreach$graphicsvg$GraphicSVG$rgba, 255, 105, 180, 1);
 var $MacCASOutreach$graphicsvg$GraphicSVG$Secret$RoundRect = F3(
 	function (a, b, c) {
 		return {$: 'RoundRect', a: a, b: b, c: c};
@@ -9227,6 +9371,18 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$text = function (str) {
 		str);
 };
 var $author$project$Main$myShapes = function (model) {
+	var highlightIfFocused = F2(
+		function (focusedState, thisState) {
+			return A2(
+				$MacCASOutreach$graphicsvg$GraphicSVG$filled,
+				_Utils_eq(focusedState, thisState) ? $MacCASOutreach$graphicsvg$GraphicSVG$pink : $MacCASOutreach$graphicsvg$GraphicSVG$green,
+				A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 40, 20, 5));
+		});
+	var currentFocus = function () {
+		var _v1 = model.nextStatesZip;
+		var f = _v1.b;
+		return f;
+	}();
 	var _v0 = model.state;
 	switch (_v0.$) {
 		case 'TrainStation':
@@ -9246,10 +9402,7 @@ var $author$project$Main$myShapes = function (model) {
 						$MacCASOutreach$graphicsvg$GraphicSVG$group(
 							_List_fromArray(
 								[
-									A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-									$MacCASOutreach$graphicsvg$GraphicSVG$green,
-									A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 40, 20, 5)),
+									A2(highlightIfFocused, currentFocus, $author$project$Main$ButtercupWay),
 									A2(
 									$MacCASOutreach$graphicsvg$GraphicSVG$move,
 									_Utils_Tuple2(0, -3),
@@ -9271,10 +9424,7 @@ var $author$project$Main$myShapes = function (model) {
 						$MacCASOutreach$graphicsvg$GraphicSVG$group(
 							_List_fromArray(
 								[
-									A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-									$MacCASOutreach$graphicsvg$GraphicSVG$green,
-									A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 40, 20, 5)),
+									A2(highlightIfFocused, currentFocus, $author$project$Main$DaffodilWay),
 									A2(
 									$MacCASOutreach$graphicsvg$GraphicSVG$move,
 									_Utils_Tuple2(0, -3),
@@ -9305,10 +9455,7 @@ var $author$project$Main$myShapes = function (model) {
 						$MacCASOutreach$graphicsvg$GraphicSVG$group(
 							_List_fromArray(
 								[
-									A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-									$MacCASOutreach$graphicsvg$GraphicSVG$green,
-									A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 40, 20, 5)),
+									A2(highlightIfFocused, currentFocus, $author$project$Main$TrainStation),
 									A2(
 									$MacCASOutreach$graphicsvg$GraphicSVG$move,
 									_Utils_Tuple2(0, -3),
@@ -9330,10 +9477,7 @@ var $author$project$Main$myShapes = function (model) {
 						$MacCASOutreach$graphicsvg$GraphicSVG$group(
 							_List_fromArray(
 								[
-									A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-									$MacCASOutreach$graphicsvg$GraphicSVG$green,
-									A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 40, 20, 5)),
+									A2(highlightIfFocused, currentFocus, $author$project$Main$DaffodilWay),
 									A2(
 									$MacCASOutreach$graphicsvg$GraphicSVG$move,
 									_Utils_Tuple2(0, -3),
@@ -9355,10 +9499,7 @@ var $author$project$Main$myShapes = function (model) {
 						$MacCASOutreach$graphicsvg$GraphicSVG$group(
 							_List_fromArray(
 								[
-									A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-									$MacCASOutreach$graphicsvg$GraphicSVG$green,
-									A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 40, 20, 5)),
+									A2(highlightIfFocused, currentFocus, $author$project$Main$MountainPass),
 									A2(
 									$MacCASOutreach$graphicsvg$GraphicSVG$move,
 									_Utils_Tuple2(0, -3),
@@ -9389,10 +9530,7 @@ var $author$project$Main$myShapes = function (model) {
 						$MacCASOutreach$graphicsvg$GraphicSVG$group(
 							_List_fromArray(
 								[
-									A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-									$MacCASOutreach$graphicsvg$GraphicSVG$green,
-									A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 40, 20, 5)),
+									A2(highlightIfFocused, currentFocus, $author$project$Main$TrainStation),
 									A2(
 									$MacCASOutreach$graphicsvg$GraphicSVG$move,
 									_Utils_Tuple2(0, -3),
@@ -9414,10 +9552,7 @@ var $author$project$Main$myShapes = function (model) {
 						$MacCASOutreach$graphicsvg$GraphicSVG$group(
 							_List_fromArray(
 								[
-									A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-									$MacCASOutreach$graphicsvg$GraphicSVG$green,
-									A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 40, 20, 5)),
+									A2(highlightIfFocused, currentFocus, $author$project$Main$ButtercupWay),
 									A2(
 									$MacCASOutreach$graphicsvg$GraphicSVG$move,
 									_Utils_Tuple2(0, -3),
@@ -9448,10 +9583,7 @@ var $author$project$Main$myShapes = function (model) {
 						$MacCASOutreach$graphicsvg$GraphicSVG$group(
 							_List_fromArray(
 								[
-									A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-									$MacCASOutreach$graphicsvg$GraphicSVG$green,
-									A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 40, 20, 5)),
+									A2(highlightIfFocused, currentFocus, $author$project$Main$DaffodilWay),
 									A2(
 									$MacCASOutreach$graphicsvg$GraphicSVG$move,
 									_Utils_Tuple2(0, -3),
@@ -9473,10 +9605,7 @@ var $author$project$Main$myShapes = function (model) {
 						$MacCASOutreach$graphicsvg$GraphicSVG$group(
 							_List_fromArray(
 								[
-									A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-									$MacCASOutreach$graphicsvg$GraphicSVG$green,
-									A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 40, 20, 5)),
+									A2(highlightIfFocused, currentFocus, $author$project$Main$FireweedWay),
 									A2(
 									$MacCASOutreach$graphicsvg$GraphicSVG$move,
 									_Utils_Tuple2(0, -3),
@@ -9498,10 +9627,7 @@ var $author$project$Main$myShapes = function (model) {
 						$MacCASOutreach$graphicsvg$GraphicSVG$group(
 							_List_fromArray(
 								[
-									A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-									$MacCASOutreach$graphicsvg$GraphicSVG$green,
-									A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 40, 20, 5)),
+									A2(highlightIfFocused, currentFocus, $author$project$Main$BullrushWay),
 									A2(
 									$MacCASOutreach$graphicsvg$GraphicSVG$move,
 									_Utils_Tuple2(0, -3),
@@ -9532,10 +9658,7 @@ var $author$project$Main$myShapes = function (model) {
 						$MacCASOutreach$graphicsvg$GraphicSVG$group(
 							_List_fromArray(
 								[
-									A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-									$MacCASOutreach$graphicsvg$GraphicSVG$green,
-									A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 40, 20, 5)),
+									A2(highlightIfFocused, currentFocus, $author$project$Main$MountainPass),
 									A2(
 									$MacCASOutreach$graphicsvg$GraphicSVG$move,
 									_Utils_Tuple2(0, -3),
@@ -9557,10 +9680,7 @@ var $author$project$Main$myShapes = function (model) {
 						$MacCASOutreach$graphicsvg$GraphicSVG$group(
 							_List_fromArray(
 								[
-									A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-									$MacCASOutreach$graphicsvg$GraphicSVG$green,
-									A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 40, 20, 5)),
+									A2(highlightIfFocused, currentFocus, $author$project$Main$BullrushWay),
 									A2(
 									$MacCASOutreach$graphicsvg$GraphicSVG$move,
 									_Utils_Tuple2(0, -3),
@@ -9591,10 +9711,7 @@ var $author$project$Main$myShapes = function (model) {
 						$MacCASOutreach$graphicsvg$GraphicSVG$group(
 							_List_fromArray(
 								[
-									A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-									$MacCASOutreach$graphicsvg$GraphicSVG$green,
-									A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 40, 20, 5)),
+									A2(highlightIfFocused, currentFocus, $author$project$Main$FireweedWay),
 									A2(
 									$MacCASOutreach$graphicsvg$GraphicSVG$move,
 									_Utils_Tuple2(0, -3),
@@ -9616,10 +9733,7 @@ var $author$project$Main$myShapes = function (model) {
 						$MacCASOutreach$graphicsvg$GraphicSVG$group(
 							_List_fromArray(
 								[
-									A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-									$MacCASOutreach$graphicsvg$GraphicSVG$green,
-									A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 40, 20, 5)),
+									A2(highlightIfFocused, currentFocus, $author$project$Main$LillyPond),
 									A2(
 									$MacCASOutreach$graphicsvg$GraphicSVG$move,
 									_Utils_Tuple2(0, -3),
@@ -9650,10 +9764,7 @@ var $author$project$Main$myShapes = function (model) {
 						$MacCASOutreach$graphicsvg$GraphicSVG$group(
 							_List_fromArray(
 								[
-									A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-									$MacCASOutreach$graphicsvg$GraphicSVG$green,
-									A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 40, 20, 5)),
+									A2(highlightIfFocused, currentFocus, $author$project$Main$BullrushWay),
 									A2(
 									$MacCASOutreach$graphicsvg$GraphicSVG$move,
 									_Utils_Tuple2(0, -3),
