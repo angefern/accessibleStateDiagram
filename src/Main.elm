@@ -72,30 +72,6 @@ myShapes model =
                   ]
                      |> move (-50, -25)
                      |> notifyTap BCW2TS
-            , group
-                  [
-                       roundedRect 40 20 5
-                            |> filled green
-                  ,    text "BW2DW"
-                            |> centered
-                            |> size 8
-                            |> filled black
-                            |> move(0, -3)
-                  ]
-                     |> move (0, -25)
-                     |> notifyTap BW2DW
-            , group
-                  [
-                       roundedRect 40 20 5
-                            |> filled green
-                  ,    text "BW2MP"
-                            |> centered
-                            |> size 8
-                            |> filled black
-                            |> move(0, -3)
-                  ]
-                     |> move (50, -25)
-                     |> notifyTap BW2MP
             ]
         DaffodilWay  ->
             [ text "DaffodilWay"
@@ -336,7 +312,7 @@ stateToSpeechStr state =
         current = stateToStr state
         nextStr = formatListWithOr (nextStates state)
     in
-        "You are at " ++ current ++ ". You may proceed to either " ++ nextStr ++ "."
+        "You are at " ++ current ++ ". You may proceed to " ++ nextStr ++ "."
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
