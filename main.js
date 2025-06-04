@@ -8828,9 +8828,10 @@ var $author$project$Main$init = F3(
 					_List_fromArray(
 						[$author$project$Main$DaffodilWay])),
 				state: $author$project$Main$TrainStation,
-				time: 0
+				time: 0,
+				timeSinceLastSpoken: 0
 			},
-			$author$project$Main$sendSpeech('You are at TrainStation. You may proceed to either ButtercupWay or DaffodilWay.'));
+			$author$project$Main$sendSpeech('You are at TrainStation. You may proceed to ButtercupWay or DaffodilWay.'));
 	});
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $author$project$Main$subscriptions = function (_v0) {
@@ -8841,6 +8842,7 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$App$Enter = {$: 'Enter'};
 var $author$project$Main$FireweedWay = {$: 'FireweedWay'};
 var $author$project$Main$LillyPond = {$: 'LillyPond'};
 var $author$project$Main$MountainPass = {$: 'MountainPass'};
+var $elm$core$Basics$ge = _Utils_ge;
 var $author$project$Main$strToState = function (str) {
 	switch (str) {
 		case 'TrainStation':
@@ -9033,47 +9035,57 @@ var $author$project$Main$update = F2(
 				var t = msg.a;
 				var _v1 = msg.b;
 				var keys = _v1.a;
+				var _v2 = (model.timeSinceLastSpoken >= 15) ? _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{time: t, timeSinceLastSpoken: 0}),
+					$author$project$Main$sendSpeech(
+						$author$project$Main$stateToSpeechStr(model.state))) : _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{time: t, timeSinceLastSpoken: model.timeSinceLastSpoken + 0.01}),
+					$elm$core$Platform$Cmd$none);
+				var processedModel = _v2.a;
+				var processedCmd = _v2.b;
 				if (_Utils_eq(
 					keys($MacCASOutreach$graphicsvg$GraphicSVG$App$RightArrow),
 					$MacCASOutreach$graphicsvg$GraphicSVG$App$JustDown)) {
 					return _Utils_Tuple2(
 						_Utils_update(
-							model,
+							processedModel,
 							{
-								nextStatesZip: $author$project$Main$sNext(model.nextStatesZip),
-								time: t
+								nextStatesZip: $author$project$Main$sNext(model.nextStatesZip)
 							}),
-						$elm$core$Platform$Cmd$none);
+						processedCmd);
 				} else {
 					if (_Utils_eq(
 						keys($MacCASOutreach$graphicsvg$GraphicSVG$App$LeftArrow),
 						$MacCASOutreach$graphicsvg$GraphicSVG$App$JustDown)) {
 						return _Utils_Tuple2(
 							_Utils_update(
-								model,
+								processedModel,
 								{
-									nextStatesZip: $author$project$Main$sPrev(model.nextStatesZip),
-									time: t
+									nextStatesZip: $author$project$Main$sPrev(model.nextStatesZip)
 								}),
-							$elm$core$Platform$Cmd$none);
+							processedCmd);
 					} else {
 						if (_Utils_eq(
 							keys($MacCASOutreach$graphicsvg$GraphicSVG$App$Enter),
 							$MacCASOutreach$graphicsvg$GraphicSVG$App$JustDown)) {
-							var _v2 = model.nextStatesZip;
-							var focused = _v2.b;
-							var _v3 = $author$project$Main$nextStates(
+							var _v3 = model.nextStatesZip;
+							var focused = _v3.b;
+							var _v4 = $author$project$Main$nextStates(
 								$author$project$Main$nextStatesStr(focused));
-							if (_v3.b) {
-								var a = _v3.a;
-								var rest = _v3.b;
+							if (_v4.b) {
+								var a = _v4.a;
+								var rest = _v4.b;
 								return _Utils_Tuple2(
 									_Utils_update(
-										model,
+										processedModel,
 										{
 											nextStatesZip: A3($author$project$Main$SZip, _List_Nil, a, rest),
 											state: focused,
-											time: t
+											timeSinceLastSpoken: 0
 										}),
 									$author$project$Main$sendSpeech(
 										$author$project$Main$stateToSpeechStr(focused)));
@@ -9085,189 +9097,185 @@ var $author$project$Main$update = F2(
 									$elm$core$Platform$Cmd$none);
 							}
 						} else {
-							return _Utils_Tuple2(
-								_Utils_update(
-									model,
-									{time: t}),
-								$elm$core$Platform$Cmd$none);
+							return _Utils_Tuple2(processedModel, processedCmd);
 						}
 					}
 				}
 			case 'TS2BCW':
-				var _v4 = model.state;
-				if (_v4.$ === 'TrainStation') {
+				var _v5 = model.state;
+				if (_v5.$ === 'TrainStation') {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{state: $author$project$Main$ButtercupWay}),
+							{state: $author$project$Main$ButtercupWay, timeSinceLastSpoken: 0}),
 						$author$project$Main$sendSpeech(
 							$author$project$Main$stateToSpeechStr($author$project$Main$ButtercupWay)));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'BCW2TS':
-				var _v5 = model.state;
-				if (_v5.$ === 'ButtercupWay') {
+				var _v6 = model.state;
+				if (_v6.$ === 'ButtercupWay') {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{state: $author$project$Main$TrainStation}),
+							{state: $author$project$Main$TrainStation, timeSinceLastSpoken: 0}),
 						$author$project$Main$sendSpeech(
 							$author$project$Main$stateToSpeechStr($author$project$Main$TrainStation)));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'TS2DW':
-				var _v6 = model.state;
-				if (_v6.$ === 'TrainStation') {
+				var _v7 = model.state;
+				if (_v7.$ === 'TrainStation') {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{state: $author$project$Main$DaffodilWay}),
+							{state: $author$project$Main$DaffodilWay, timeSinceLastSpoken: 0}),
 						$author$project$Main$sendSpeech(
 							$author$project$Main$stateToSpeechStr($author$project$Main$DaffodilWay)));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'DW2TS':
-				var _v7 = model.state;
-				if (_v7.$ === 'DaffodilWay') {
+				var _v8 = model.state;
+				if (_v8.$ === 'DaffodilWay') {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{state: $author$project$Main$TrainStation}),
+							{state: $author$project$Main$TrainStation, timeSinceLastSpoken: 0}),
 						$author$project$Main$sendSpeech(
 							$author$project$Main$stateToSpeechStr($author$project$Main$TrainStation)));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'DW2BCW':
-				var _v8 = model.state;
-				if (_v8.$ === 'DaffodilWay') {
+				var _v9 = model.state;
+				if (_v9.$ === 'DaffodilWay') {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{state: $author$project$Main$ButtercupWay}),
+							{state: $author$project$Main$ButtercupWay, timeSinceLastSpoken: 0}),
 						$author$project$Main$sendSpeech(
 							$author$project$Main$stateToSpeechStr($author$project$Main$ButtercupWay)));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'BCW2DW':
-				var _v9 = model.state;
-				if (_v9.$ === 'ButtercupWay') {
+				var _v10 = model.state;
+				if (_v10.$ === 'ButtercupWay') {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{state: $author$project$Main$DaffodilWay}),
+							{state: $author$project$Main$DaffodilWay, timeSinceLastSpoken: 0}),
 						$author$project$Main$sendSpeech(
 							$author$project$Main$stateToSpeechStr($author$project$Main$DaffodilWay)));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'BCW2MP':
-				var _v10 = model.state;
-				if (_v10.$ === 'ButtercupWay') {
+				var _v11 = model.state;
+				if (_v11.$ === 'ButtercupWay') {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{state: $author$project$Main$MountainPass}),
+							{state: $author$project$Main$MountainPass, timeSinceLastSpoken: 0}),
 						$author$project$Main$sendSpeech(
 							$author$project$Main$stateToSpeechStr($author$project$Main$MountainPass)));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'MP2DW':
-				var _v11 = model.state;
-				if (_v11.$ === 'MountainPass') {
+				var _v12 = model.state;
+				if (_v12.$ === 'MountainPass') {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{state: $author$project$Main$DaffodilWay}),
+							{state: $author$project$Main$DaffodilWay, timeSinceLastSpoken: 0}),
 						$author$project$Main$sendSpeech(
 							$author$project$Main$stateToSpeechStr($author$project$Main$DaffodilWay)));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'MP2FW':
-				var _v12 = model.state;
-				if (_v12.$ === 'MountainPass') {
+				var _v13 = model.state;
+				if (_v13.$ === 'MountainPass') {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{state: $author$project$Main$FireweedWay}),
+							{state: $author$project$Main$FireweedWay, timeSinceLastSpoken: 0}),
 						$author$project$Main$sendSpeech(
 							$author$project$Main$stateToSpeechStr($author$project$Main$FireweedWay)));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'FW2MP':
-				var _v13 = model.state;
-				if (_v13.$ === 'FireweedWay') {
+				var _v14 = model.state;
+				if (_v14.$ === 'FireweedWay') {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{state: $author$project$Main$MountainPass}),
+							{state: $author$project$Main$MountainPass, timeSinceLastSpoken: 0}),
 						$author$project$Main$sendSpeech(
 							$author$project$Main$stateToSpeechStr($author$project$Main$MountainPass)));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'FW2BW':
-				var _v14 = model.state;
-				if (_v14.$ === 'FireweedWay') {
+				var _v15 = model.state;
+				if (_v15.$ === 'FireweedWay') {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{state: $author$project$Main$BullrushWay}),
+							{state: $author$project$Main$BullrushWay, timeSinceLastSpoken: 0}),
 						$author$project$Main$sendSpeech(
 							$author$project$Main$stateToSpeechStr($author$project$Main$BullrushWay)));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'BW2FW':
-				var _v15 = model.state;
-				if (_v15.$ === 'BullrushWay') {
+				var _v16 = model.state;
+				if (_v16.$ === 'BullrushWay') {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{state: $author$project$Main$FireweedWay}),
+							{state: $author$project$Main$FireweedWay, timeSinceLastSpoken: 0}),
 						$author$project$Main$sendSpeech(
 							$author$project$Main$stateToSpeechStr($author$project$Main$FireweedWay)));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'MP2BW':
-				var _v16 = model.state;
-				if (_v16.$ === 'MountainPass') {
+				var _v17 = model.state;
+				if (_v17.$ === 'MountainPass') {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{state: $author$project$Main$BullrushWay}),
+							{state: $author$project$Main$BullrushWay, timeSinceLastSpoken: 0}),
 						$author$project$Main$sendSpeech(
 							$author$project$Main$stateToSpeechStr($author$project$Main$BullrushWay)));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'LP2BW':
-				var _v17 = model.state;
-				if (_v17.$ === 'LillyPond') {
+				var _v18 = model.state;
+				if (_v18.$ === 'LillyPond') {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{state: $author$project$Main$BullrushWay}),
+							{state: $author$project$Main$BullrushWay, timeSinceLastSpoken: 0}),
 						$author$project$Main$sendSpeech(
 							$author$project$Main$stateToSpeechStr($author$project$Main$BullrushWay)));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'BW2LP':
-				var _v18 = model.state;
-				if (_v18.$ === 'BullrushWay') {
+				var _v19 = model.state;
+				if (_v19.$ === 'BullrushWay') {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{state: $author$project$Main$LillyPond}),
+							{state: $author$project$Main$LillyPond, timeSinceLastSpoken: 0}),
 						$author$project$Main$sendSpeech(
 							$author$project$Main$stateToSpeechStr($author$project$Main$LillyPond)));
 				} else {
