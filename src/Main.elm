@@ -239,6 +239,7 @@ myShapes model =
             ]
 
 type Msg = Tick Float GetKeyState
+         | KeyDown String
          | TS2BCW
          | BCW2TS
          | TS2DW
@@ -353,61 +354,60 @@ formatListWithOr list =
             String.join ", " (List.reverse rest) ++ ", or " ++ last
 
 
-stateToSpeechStr : State -> String
-stateToSpeechStr state =
+stateToSpeechStr : State -> StateZipper -> String
+stateToSpeechStr state zip =
     let
         current = stateToStr state
         nextStr = formatListWithOr (nextStatesStr state)
     in
-        "You are at " ++ current ++ ". You may proceed to " ++ nextStr ++ "."
+        case zip of 
+            SZip _ focused _ -> "You are at " ++ current ++ ". You may proceed to " ++ nextStr ++ ". " ++ (stateToStr focused) ++ " is currently selected. Use the left and right arrow keys to change selection."
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-  Sub.none
+  onKeyDown (D.map KeyDown (D.field "key" D.string))
+
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
     case msg of
-        Tick t (keys, _, _) ->
-            let 
-                (processedModel, processedCmd) = 
-                    if model.timeSinceLastSpoken >= 15
-                        then ( { model | time = t, timeSinceLastSpoken = 0 
-                                }, sendSpeech (stateToSpeechStr model.state) ) 
-                    else  ( { model | time = t, 
-                            timeSinceLastSpoken = model.timeSinceLastSpoken + 0.01 
-                            }, Cmd.none )
-            in
-            if keys RightArrow == JustDown then 
-                ({ processedModel | nextStatesZip = sNext model.nextStatesZip }, processedCmd)
-            else if keys LeftArrow == JustDown then 
-                ({ processedModel | nextStatesZip = sPrev model.nextStatesZip }, processedCmd)
-            else if keys Enter == JustDown then 
-                case model.nextStatesZip of 
-                    SZip _ focused _ -> 
-                        case nextStates (nextStatesStr focused) of
-                            a :: rest -> 
-                                ({ processedModel | state = focused
-                                    , nextStatesZip = SZip [] a rest
-                                    , timeSinceLastSpoken = 0 
-                                    }, sendSpeech (stateToSpeechStr focused))
-                            [] -> ( { model | time = t }, Cmd.none )
+        Tick t _ -> if model.timeSinceLastSpoken >= 15
+                    then (
+                        case model.state of
+                            TrainStation -> ( { model | time = t, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr TrainStation model.nextStatesZip) )
+                            ButtercupWay -> ( { model | time = t, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr ButtercupWay model.nextStatesZip) )
+                            DaffodilWay -> ( { model | time = t, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr DaffodilWay model.nextStatesZip) )
+                            MountainPass -> ( { model | time = t, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr MountainPass model.nextStatesZip) )
+                            FireweedWay -> ( { model | time = t, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr FireweedWay model.nextStatesZip) )
+                            BullrushWay -> ( { model | time = t, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr BullrushWay model.nextStatesZip) )
+                            LillyPond -> ( { model | time = t, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr LillyPond model.nextStatesZip) )
+                    )
+                    else    ( { model | time = t, timeSinceLastSpoken = model.timeSinceLastSpoken + 0.01 }, Cmd.none )
 
-            else 
-                ( processedModel, processedCmd)                 
 
         TS2BCW ->
             case model.state of
                 TrainStation ->
-                    ( { model | state = ButtercupWay, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr ButtercupWay) )
-
+                    let
+                        nextStatesList = nextStates (nextStatesStr ButtercupWay)
+                        
+                    in
+                        case nextStatesList of
+                            a::rest -> ( { model | state = ButtercupWay, timeSinceLastSpoken = 0, nextStatesZip = SZip [] a rest }, sendSpeech (stateToSpeechStr ButtercupWay model.nextStatesZip) )
+                            _ -> ( { model | state = ButtercupWay, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr ButtercupWay model.nextStatesZip) )
                 _ ->
                     ( model, Cmd.none )
 
         BCW2TS ->
             case model.state of
                 ButtercupWay ->
-                    ( { model | state = TrainStation, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr TrainStation) )
+                    let
+                        nextStatesList = nextStates (nextStatesStr TrainStation)
+                        
+                    in
+                        case nextStatesList of
+                            a::rest -> ( { model | state = TrainStation, timeSinceLastSpoken = 0, nextStatesZip = SZip [] a rest }, sendSpeech (stateToSpeechStr TrainStation model.nextStatesZip) )
+                            _ -> ( { model | state = TrainStation, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr TrainStation model.nextStatesZip) )
 
                 _ ->
                     ( model, Cmd.none )
@@ -415,15 +415,24 @@ update msg model =
         TS2DW ->
             case model.state of
                 TrainStation ->
-                    ( { model | state = DaffodilWay, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr DaffodilWay) )
-
+                    let
+                        nextStatesList = nextStates (nextStatesStr DaffodilWay)
+                    in
+                        case nextStatesList of
+                            a::rest -> ( { model | state = DaffodilWay, timeSinceLastSpoken = 0, nextStatesZip = SZip [] a rest }, sendSpeech (stateToSpeechStr DaffodilWay model.nextStatesZip) )
+                            _ -> ( { model | state = DaffodilWay, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr DaffodilWay model.nextStatesZip) )
                 _ ->
                     ( model, Cmd.none )
 
         DW2TS ->
             case model.state of
                 DaffodilWay ->
-                    ( { model | state = TrainStation, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr TrainStation) )
+                    let
+                        nextStatesList = nextStates (nextStatesStr TrainStation)
+                    in
+                        case nextStatesList of
+                            a::rest -> ( { model | state = TrainStation, timeSinceLastSpoken = 0, nextStatesZip = SZip [] a rest }, sendSpeech (stateToSpeechStr TrainStation model.nextStatesZip) )
+                            _ -> ( { model | state = TrainStation, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr TrainStation model.nextStatesZip) )
 
                 _ ->
                     ( model, Cmd.none )
@@ -431,7 +440,7 @@ update msg model =
         DW2BCW ->
             case model.state of
                 DaffodilWay ->
-                    ( { model | state = ButtercupWay, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr ButtercupWay) )
+                    ( { model | state = ButtercupWay, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr ButtercupWay model.nextStatesZip) )
 
                 _ ->
                     ( model, Cmd.none )
@@ -439,7 +448,12 @@ update msg model =
         BCW2DW ->
             case model.state of
                 ButtercupWay ->
-                    ( { model | state = DaffodilWay, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr DaffodilWay) )
+                    let
+                        nextStatesList = nextStates (nextStatesStr DaffodilWay)
+                    in
+                        case nextStatesList of 
+                            a::rest -> ( { model | state = DaffodilWay, timeSinceLastSpoken = 0, nextStatesZip = SZip [] a rest }, sendSpeech (stateToSpeechStr DaffodilWay model.nextStatesZip) )
+                            _ -> ( { model | state = DaffodilWay, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr DaffodilWay model.nextStatesZip) )
 
                 _ ->
                     ( model, Cmd.none )
@@ -447,7 +461,12 @@ update msg model =
         BCW2MP ->
             case model.state of
                 ButtercupWay ->
-                    ( { model | state = MountainPass, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr MountainPass) )
+                    let
+                        nextStatesList = nextStates (nextStatesStr MountainPass)
+                    in
+                        case nextStatesList of
+                            a::rest -> ( { model | state = MountainPass, timeSinceLastSpoken = 0, nextStatesZip = SZip [] a rest }, sendSpeech (stateToSpeechStr MountainPass model.nextStatesZip) )
+                            _ -> ( { model | state = MountainPass, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr MountainPass model.nextStatesZip) )
 
                 _ ->
                     ( model, Cmd.none )
@@ -455,7 +474,12 @@ update msg model =
         MP2DW ->
             case model.state of
                 MountainPass ->
-                    ( { model | state = DaffodilWay, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr DaffodilWay) )
+                    let
+                            nextStatesList = nextStates (nextStatesStr DaffodilWay)
+                    in
+                        case nextStatesList of 
+                            a::rest -> ( { model | state = DaffodilWay, timeSinceLastSpoken = 0, nextStatesZip = SZip [] a rest }, sendSpeech (stateToSpeechStr DaffodilWay model.nextStatesZip) )
+                            _ -> ( { model | state = DaffodilWay, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr DaffodilWay model.nextStatesZip) )
 
                 _ ->
                     ( model, Cmd.none )
@@ -463,7 +487,12 @@ update msg model =
         MP2FW ->
             case model.state of
                 MountainPass ->
-                    ( { model | state = FireweedWay, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr FireweedWay) )
+                    let
+                            nextStatesList = nextStates (nextStatesStr FireweedWay)
+                    in
+                        case nextStatesList of
+                            a::rest -> ( { model | state = FireweedWay, timeSinceLastSpoken = 0, nextStatesZip = SZip [] a rest }, sendSpeech (stateToSpeechStr FireweedWay model.nextStatesZip) )
+                            _ -> ( { model | state = FireweedWay, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr FireweedWay model.nextStatesZip) )
 
                 _ ->
                     ( model, Cmd.none )
@@ -471,7 +500,12 @@ update msg model =
         FW2MP ->
             case model.state of
                 FireweedWay ->
-                    ( { model | state = MountainPass, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr MountainPass) )
+                    let
+                            nextStatesList = nextStates (nextStatesStr MountainPass)
+                    in
+                        case nextStatesList of
+                            a::rest -> ( { model | state = MountainPass, timeSinceLastSpoken = 0, nextStatesZip = SZip [] a rest }, sendSpeech (stateToSpeechStr MountainPass model.nextStatesZip) )
+                            _ -> ( { model | state = MountainPass, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr MountainPass model.nextStatesZip) )
 
                 _ ->
                     ( model, Cmd.none )
@@ -479,7 +513,12 @@ update msg model =
         FW2BW ->
             case model.state of
                 FireweedWay ->
-                    ( { model | state = BullrushWay, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr BullrushWay) )
+                    let
+                            nextStatesList = nextStates (nextStatesStr BullrushWay)
+                    in
+                        case nextStatesList of
+                            a::rest -> ( { model | state = BullrushWay, timeSinceLastSpoken = 0, nextStatesZip = SZip [] a rest }, sendSpeech (stateToSpeechStr BullrushWay model.nextStatesZip) )
+                            _ -> ( { model | state = BullrushWay, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr BullrushWay model.nextStatesZip) )
 
                 _ ->
                     ( model, Cmd.none )
@@ -487,7 +526,12 @@ update msg model =
         BW2FW ->
             case model.state of
                 BullrushWay ->
-                    ( { model | state = FireweedWay, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr FireweedWay) )
+                    let
+                            nextStatesList = nextStates (nextStatesStr FireweedWay)
+                    in
+                        case nextStatesList of
+                            a::rest -> ( { model | state = FireweedWay, timeSinceLastSpoken = 0, nextStatesZip = SZip [] a rest }, sendSpeech (stateToSpeechStr FireweedWay model.nextStatesZip) )
+                            _ -> ( { model | state = FireweedWay, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr FireweedWay model.nextStatesZip) )
 
                 _ ->
                     ( model, Cmd.none )
@@ -495,7 +539,12 @@ update msg model =
         MP2BW ->
             case model.state of
                 MountainPass ->
-                    ( { model | state = BullrushWay, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr BullrushWay) )
+                    let
+                            nextStatesList = nextStates (nextStatesStr BullrushWay)
+                    in
+                        case nextStatesList of
+                            a::rest -> ( { model | state = BullrushWay, timeSinceLastSpoken = 0, nextStatesZip = SZip [] a rest }, sendSpeech (stateToSpeechStr BullrushWay model.nextStatesZip) )
+                            _ -> ( { model | state = BullrushWay, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr BullrushWay model.nextStatesZip) )
 
                 _ ->
                     ( model, Cmd.none )
@@ -503,7 +552,12 @@ update msg model =
         LP2BW ->
             case model.state of
                 LillyPond ->
-                    ( { model | state = BullrushWay, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr BullrushWay) )
+                    let
+                            nextStatesList = nextStates (nextStatesStr BullrushWay)
+                    in
+                        case nextStatesList of
+                            a::rest -> ( { model | state = BullrushWay, timeSinceLastSpoken = 0, nextStatesZip = SZip [] a rest }, sendSpeech (stateToSpeechStr BullrushWay model.nextStatesZip) )
+                            _ -> ( { model | state = BullrushWay, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr BullrushWay model.nextStatesZip) )
 
                 _ ->
                     ( model, Cmd.none )
@@ -511,14 +565,52 @@ update msg model =
         BW2LP ->
             case model.state of
                 BullrushWay ->
-                    ( { model | state = LillyPond, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr LillyPond) )
+                    let
+                            nextStatesList = nextStates (nextStatesStr LillyPond)
+                    in
+                        case nextStatesList of
+                            a::rest -> ( { model | state = LillyPond, timeSinceLastSpoken = 0, nextStatesZip = SZip [] a rest }, sendSpeech (stateToSpeechStr LillyPond model.nextStatesZip) )
+                            _ -> ( { model | state = LillyPond, timeSinceLastSpoken = 0 }, sendSpeech (stateToSpeechStr LillyPond model.nextStatesZip) )
 
                 _ ->
                     ( model, Cmd.none )
                     
         NoOp ->
             ( model, Cmd.none )
+        KeyDown code -> case code of
+                            "ArrowRight" -> let
+                                                updatedZipper = sNext model.nextStatesZip
+                                
+                                            in
+                                                ({ model | nextStatesZip = updatedZipper, timeSinceLastSpoken = 0  }, sendSpeech (focusChangeStr updatedZipper))
+                            "ArrowLeft" ->  let
+                                                updatedZipper = sPrev model.nextStatesZip
+                                            in
+                                                ({ model | nextStatesZip = updatedZipper, timeSinceLastSpoken = 0 }, sendSpeech (focusChangeStr updatedZipper))
+                            "Enter" -> (case model.nextStatesZip of
+                                            SZip _ focused _ -> 
+                                                case nextStates (nextStatesStr focused) of
+                                                    a::rest -> ({ model | state = focused
+                                                                        , nextStatesZip = SZip [] a rest
+                                                                        , timeSinceLastSpoken = 0
+                                                                 }, sendSpeech (stateToSpeechStr focused (SZip [] a rest)))
 
+                                                    [] -> (model, Cmd.none) 
+                                        )
+                            _ -> (model, Cmd.none)
+        
+        
+        {-( model
+                        {-case model.state of
+                            NotTyping -> model -}
+                            -- TODO handle keyboard input here
+                            -- ExampleState -> { model | chars1 = typeAndDelete model.chars1 code }
+                        ,Cmd.none)-}
+
+
+focusChangeStr : StateZipper -> String
+focusChangeStr zip = case zip of
+                        SZip _ focused _ -> "You have selected " ++ (stateToStr focused) ++ ". Press enter to move to this state."
 
 type alias Model =
     { time : Float
@@ -531,7 +623,7 @@ type alias Point = (Float, Float)
 
 init : () -> Url.Url -> Browser.Navigation.Key -> ( Model, Cmd Msg ) --?
 init _ _ _ = ({ time = 0, state = TrainStation, nextStatesZip = (SZip [] ButtercupWay [DaffodilWay]), timeSinceLastSpoken = 0 }
-                , sendSpeech "You are at TrainStation. You may proceed to ButtercupWay or DaffodilWay." )
+                , sendSpeech "You are at TrainStation. You may proceed to ButtercupWay or DaffodilWay. ButtercupWay is currently selected." )
 
 
 
